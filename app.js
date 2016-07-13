@@ -28,7 +28,7 @@ server.post('/api/messages', connector.listen());
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
 //This is the StorBotLuis
-//preview Luis model have issue of intents always null
+//preview Luis model have issue of intents always return null
 //var model = 'https://api.projectoxford.ai/luis/v1/application/preview?id=f567c7e9-c4ab-442d-8956-41cb1c8bcffc&subscription-key=7e282443df6b4699b0fdc189cde863d5&q=';
 var model = 'https://api.projectoxford.ai/luis/v1/application?id=f567c7e9-c4ab-442d-8956-41cb1c8bcffc&subscription-key=7e282443df6b4699b0fdc189cde863d5&q=';
 var recognizer = new builder.LuisRecognizer(model);
@@ -103,10 +103,10 @@ intents.matches('BeautyEnquiry', [
             session.endDialog(reply);
         } else if (lipsProduct.length > 0) {
             //builder.Prompts.text(session, "is a BeautyProduct.Lips enquiry");
-            session.send('Here are the Beauty Lips products?');
+            session.send('Here are the Beauty Lips products');
         } else if (eyesProduct.length > 0) {
             //builder.Prompts.text(session, "is a BeautyProduct.Eyes enquiry");
-            session.send('Here are the Beauty Eyes products?');
+            session.send('Here are the Beauty Eyes products');
         };
     }
 ]);
@@ -128,5 +128,5 @@ intents.matches('BabyEnquiry', [
 ]);
 
 
-intents.onDefault(builder.DialogAction.send("Example Question: Do you have any milk powder for Baby?"));
+intents.onDefault(builder.DialogAction.send("You can say something like: Do you have any milk powder for Baby?"));
 
