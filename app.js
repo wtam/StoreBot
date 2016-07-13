@@ -100,6 +100,7 @@ intents.matches('BeautyEnquiry', [
             var reply = new builder.Message()
                 .setText(session, replyText)
                 .addAttachment({ fallbackText: replyText, contentType: 'image/jpeg', contentUrl: imageURL });
+            //console.log(reply);
             session.send(reply);
         } else if (lipsProduct.length > 0) {
             //builder.Prompts.text(session, "is a BeautyProduct.Lips enquiry");
@@ -120,9 +121,9 @@ intents.matches('BabyEnquiry', [
         var milkProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BabyProduct::MilkPowder');
         var diaperProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BabyProduct::Diapers');
         if (milkProduct.length > 0) {
-            session.send('Here are the Baby milk products?');
+            session.send('Here are the Baby milk products');
         } else if (diaperProduct.length > 0) {
-            session.send('Here are the Baby Diaper products?');
+            session.send('Here are the Baby Diaper products');
         };
     }
 ]);
