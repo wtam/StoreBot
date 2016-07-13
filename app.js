@@ -95,12 +95,12 @@ intents.matches('BeautyEnquiry', [
             //var productImage = builder.CardImage.create(session, 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg');
             //var reply = builder.CardAction.showImage(session, 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg');
             //console.log(productImage);
-            var attribution = "Beauty Face Product: ";
-            var imageLink = 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg';
+            var replyText = "Beauty Face Product: ";
+            var imageURL = "http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg";
             var reply = new builder.Message()
-                .setText(session, attribution)
-                .addAttachment({ fallbackText: attribution, contentType: 'image/jpeg', contentUrl: imageLink });
-            session.endDialog(reply);
+                .setText(session, replyText)
+                .addAttachment({ fallbackText: replyText, contentType: 'image/jpeg', contentUrl: imageURL });
+            session.send(reply);
         } else if (lipsProduct.length > 0) {
             //builder.Prompts.text(session, "is a BeautyProduct.Lips enquiry");
             session.send('Here are the Beauty Lips products');
