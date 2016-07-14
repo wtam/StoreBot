@@ -92,19 +92,20 @@ intents.matches('BeautyEnquiry', [
         if (faceProduct.length > 0) {
             //builder.Prompts.text(session, "is BeautyProduct::Face enquiry");
             //session.send('Here are the Beauty Face products?');
-            //var productImage = builder.CardImage.create(session, 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg');
-            //var reply = builder.CardAction.showImage(session, 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg');
-            //console.log(productImage);
-            var replyText = "Beauty Face Product: ";
-            var imageURL = "http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg";
-            var reply = new builder.Message()
-                .setText(session, replyText)
-                .addAttachment({ fallbackText: replyText, contentType: 'image/jpeg', contentUrl: imageURL });
-            //console.log(reply);
+            var reply = new builder.Message().setText(session, "Beauty Face Product: ");
+            if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "BB Cream")) {
+                reply.addAttachment({ contentType : 'image/jpeg', contentUrl : 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' });
+            } else if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "2 way cake")) {
+                reply.addAttachment({ contentType : 'image/jpeg', contentUrl : 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
+            }
             session.send(reply);
         } else if (lipsProduct.length > 0) {
             //builder.Prompts.text(session, "is a BeautyProduct.Lips enquiry");
-            session.send('Here are the Beauty Lips products');
+            var reply = new builder.Message().setText(session, "Beauty Lips Product: ");
+            if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "lipstick")) {
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
+            }
+            session.send(reply);
         } else if (eyesProduct.length > 0) {
             //builder.Prompts.text(session, "is a BeautyProduct.Eyes enquiry");
             session.send('Here are the Beauty Eyes products');
@@ -121,9 +122,17 @@ intents.matches('BabyEnquiry', [
         var milkProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BabyProduct::MilkPowder');
         var diaperProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BabyProduct::Diapers');
         if (milkProduct.length > 0) {
-            session.send('Here are the Baby milk products');
+            var reply = new builder.Message().setText(session, "Baby Milk Product: ");
+            if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "milk")) {
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
+            }
+            session.send(reply);
         } else if (diaperProduct.length > 0) {
-            session.send('Here are the Baby Diaper products');
+            var reply = new builder.Message().setText(session, "Baby Diaper Product: ");
+            if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "diaper")) {
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
+            }
+            session.send(reply);
         };
     }
 ]);
