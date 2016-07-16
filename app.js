@@ -11,6 +11,25 @@ For a complete walkthrough of creating this bot see the article below.
 
 var builder = require('botbuilder');
 var restify = require('restify');
+var geo = require("geotrouvetou"); //find the nearest geolocation https://github.com/jbpin/geo-trouvetou 
+//set up for GPS
+var geoloc = require("geocode-wifi");
+var getPosition = require('tape');
+/* Not accurate....
+getPosition('no array', function (t) {
+    geoloc(undefined, function (err, location) {
+        t.error(err)
+        console.log(location)
+    if (location !== undefined) {
+        t.ok('lat' in location)
+        t.ok('lng' in location)
+        t.ok('accuracy' in location)
+        }
+        t.end()
+    })
+}) 
+*/
+
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -35,6 +54,28 @@ var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 bot.dialog('/', intents);
 
+//setup the store that has Chinese medicine for closest geolocation detection
+//map Waston store addrees with Chinese Medicine using http://www.latlong.net/
+var tree = new geo.GeoTrouvetou();
+var AberdeenCentre = new geo.GeoPoint(22.248307, 114.152440);
+var TaikooShing = new geo.GeoPoint(22.285665, 114.217413);
+var KwunTong = new geo.GeoPoint(22.310423, 114.224628);
+var TsimShaTsui = new geo.GeoPoint(22.299033, 114.173381);
+var WhampoaGarden = new geo.GeoPoint(22.299196, 114.173618);
+var Mongkok = new geo.GeoPoint(22.318539, 114.169271);
+var YuenLong = new geo.GeoPoint(22.444258, 114.027732);
+var Fanling = new geo.GeoPoint(22.492709, 114.139395);
+
+//use geotrouvetou to prepare to calculate the closet store location
+tree.addPoint(AberdeenCentre);     //Shop 6C, Hoi Chu Court, Aberdeen Centre, Aberdeen, H.K.
+tree.addPoint(TaikooShing);     //Shop No.124, First Floor, Cityplaza, 18 Taikoo Shing, Island East, H.K
+tree.addPoint(KwunTong);     //Crocodile Centre, Hoi Yuen Road, Kwun Tong, Kowloon
+tree.addPoint(TsimShaTsui);     //Shop 5, G/F & Basement, Hang Sang Building, 18 Carnarvon Road, Tsim Sha Tsui, Kowloon
+tree.addPoint(WhampoaGarden);     //Shop No. G3A on the Ground Floor, Site 2, Whampoa Garden, Hung Hom, Kowloon
+tree.addPoint(Mongkok);     //Shop No.C1, G/F. & Whole of Mezzanine Floor, Wu Sang House, 655 Nathan Road, Mongkok, Kowloon
+tree.addPoint(YuenLong);     //142 Castle Peak Road,Yuen Long, N.T.
+tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanling, N.T.
+
 // Install First Run middleware and dialog
 bot.use({
     botbuilder: function (session, next) {
@@ -51,13 +92,44 @@ bot.dialog('/firstRun', [
         builder.Prompts.text(session, "Hello, I'm a Store Bot.....What's your name?");
     },
     function (session, results) {
+
+        //My home location
+        //var closest = tree.findClosest(new geo.GeoPoint(22.282832, 114.216016));
+        //console.log(closet);
+        getPosition('no array', function (t) {
+            geoloc(undefined, function (err, location) {
+                t.error(err)
+                console.log(location)
+                //find the closeset location
+                var closestStore = tree.findClosest(new geo.GeoPoint(location.lat, location.lng))
+                console.log (closestStore)
+                //detect the closet store
+                switch (closestStore) {
+                    //case AberdeenCentre : session.send("%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre", session.userData.name);
+                    case AberdeenCentre: console.log("%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre for Chinese Medicine", results.response); break;
+                    case TaikooShing: console.log("%s, you can visit our store at Shop No.124, First Floor, Cityplaza for Chinese Medicine", results.response); break;
+                    case KwunTong: console.log("%s, you can visit our store at Crocodile Centre, Kwun Tong for Chinese Medicine", results.response); break;
+                    case TsimShaTsui: console.log("%s, you can visit our store at Shop 5, G/F & Basement, Hang Sang Building, Tsim Sha Tsui for Chinese Medicine", results.response); break;
+                    case WhampoaGarden: console.log("%s, you can visit our store at Shop No. G3A on the Ground Floor, Site 2, Whampoa Garden for Chinese Medicine", results.response); break;
+                    case Mongkok: console.log("%s, you can visit our store at Shop No.C1, G/F. & Whole of Mezzanine Floor, Mongkok for Chinese Medicine", results.response); break;
+                    case YuenLong: console.log("%s, you can visit our store at 142 Castle Peak Road,Yuen Long for Chinese Medicine", results.response); break;
+                    case Fanling: console.log("%s, you can visit our store at Shop No. 28B, Level 2, Fanling Town Centre for Chinese Medicine", results.response);
+                }
+                if (location !== undefined) {
+                    t.ok('lat' in location)
+                    t.ok('lng' in location)
+                    t.ok('accuracy' in location)                    
+                }
+                t.end()
+            })
+        }) 
         // We'll save the prompts result and return control to main through
         // a call to replaceDialog(). We need to use replaceDialog() because
         // we intercepted the original call to main and we want to remove the
         // /firstRun dialog from the callstack. If we called endDialog() here
         // the conversation would end since the /firstRun dialog is the only 
         // dialog on the stack.
-        session.userData.name = results.response;
+        session.userData.name = results.response
         session.send("%s, I can help you to find product from e-Store", session.userData.name);
         session.replaceDialog('/');
     }
