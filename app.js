@@ -14,21 +14,19 @@ var restify = require('restify');
 var geo = require("geotrouvetou"); //find the nearest geolocation https://github.com/jbpin/geo-trouvetou 
 //set up for GPS
 var geoloc = require("geocode-wifi");
-var getPosition = require('tape');
-/* Not accurate....
-getPosition('no array', function (t) {
-    geoloc(undefined, function (err, location) {
-        t.error(err)
-        console.log(location)
-    if (location !== undefined) {
-        t.ok('lat' in location)
-        t.ok('lng' in location)
-        t.ok('accuracy' in location)
-        }
-        t.end()
+var wifiScanner = require('node-wifiscanner'); //https://www.npmjs.com/package/geocode-wifi
+
+/* Not accurate.... need improvement using https://github.com/spark/node-wifiscanner/blob/master/examples/geolocation.js
+wifiScanner.scan(function (err, towers) {
+    if (err) throw err
+    console.log(towers)
+    geoloc(towers, function (err, location) {
+        if (err) throw err
+
+        console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
     })
-}) 
-*/
+})*/
+
 
 
 // Setup Restify Server
@@ -55,7 +53,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 bot.dialog('/', intents);
 
 //setup the store that has Chinese medicine for closest geolocation detection
-//map Waston store addrees with Chinese Medicine using http://www.latlong.net/
+//map Waston store addrees to its geolocation using http://www.latlong.net/
 var tree = new geo.GeoTrouvetou();
 var AberdeenCentre = new geo.GeoPoint(22.248307, 114.152440);
 var TaikooShing = new geo.GeoPoint(22.285665, 114.217413);
@@ -92,17 +90,20 @@ bot.dialog('/firstRun', [
         builder.Prompts.text(session, "Hello, I'm a Store Bot.....What's your name?");
     },
     function (session, results) {
-
+ 
         //My home location
         //var closest = tree.findClosest(new geo.GeoPoint(22.282832, 114.216016));
         //console.log(closet);
-        getPosition('no array', function (t) {
-            geoloc(undefined, function (err, location) {
-                t.error(err)
-                console.log(location)
+        wifiScanner.scan(function (err, towers) {
+            if (err) throw err
+            console.log(towers)
+            geoloc(towers, function (err, location) {
+                if (err) throw err
+
+                console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
                 //find the closeset location
                 var closestStore = tree.findClosest(new geo.GeoPoint(location.lat, location.lng))
-                console.log (closestStore)
+                console.log(closestStore)
                 //detect the closet store
                 switch (closestStore) {
                     //case AberdeenCentre : session.send("%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre", session.userData.name);
@@ -115,14 +116,9 @@ bot.dialog('/firstRun', [
                     case YuenLong: console.log("%s, you can visit our store at 142 Castle Peak Road,Yuen Long for Chinese Medicine", results.response); break;
                     case Fanling: console.log("%s, you can visit our store at Shop No. 28B, Level 2, Fanling Town Centre for Chinese Medicine", results.response);
                 }
-                if (location !== undefined) {
-                    t.ok('lat' in location)
-                    t.ok('lng' in location)
-                    t.ok('accuracy' in location)                    
-                }
-                t.end()
             })
-        }) 
+        })
+
         // We'll save the prompts result and return control to main through
         // a call to replaceDialog(). We need to use replaceDialog() because
         // we intercepted the original call to main and we want to remove the
