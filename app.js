@@ -17,6 +17,7 @@ var geoloc = require("geocode-wifi");
 var wifiScanner = require('node-wifiscanner'); //https://www.npmjs.com/package/geocode-wifi
 
 // Not accurate.... need improvement using https://github.com/spark/node-wifiscanner/blob/master/examples/geolocation.js
+/*
 wifiScanner.scan(function (err, towers) {
     if (err) throw err
     console.log(towers)
@@ -25,7 +26,7 @@ wifiScanner.scan(function (err, towers) {
 
         console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
     })
-})
+})*/
 
 
 
