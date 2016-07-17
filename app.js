@@ -236,14 +236,14 @@ intents.matches('ChineseMedicineEnquiry', [
         var chineseMedicineService = builder.EntityRecognizer.findAllEntities(args.entities, 'ChineseMedicineService');
         //find the closest store that has ChineseMedicineservice
         wifiScanner.scan(function (err, towers) {
-            if (err) throw err
-            console.log(towers)
+            if (err) throw err;
+            console.log(towers);
             geoloc(towers, function (err, location) {
-                if (err) throw err
-                console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
+                if (err) throw err;
+                console.log(location); // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
                 //find the closeset location
-                var closestStore = tree.findClosest(new geo.GeoPoint(location.lat, location.lng))
-                console.log(closestStore)
+                var closestStore = tree.findClosest(new geo.GeoPoint(location.lat, location.lng));
+                console.log(closestStore);
                 //recommend to goto the closet store
                 switch (closestStore) {
                     //case AberdeenCentre : session.send("%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre", session.userData.name);
