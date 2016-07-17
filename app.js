@@ -14,6 +14,7 @@ var restify = require('restify');
 var geo = require("geotrouvetou"); //find the nearest geolocation https://github.com/jbpin/geo-trouvetou 
 //set up for GPS
 var geoloc = require("geocode-wifi");
+
 var wifiScanner = require('node-wifiscanner'); //https://www.npmjs.com/package/geocode-wifi
 
 // Not accurate.... need improvement using https://github.com/spark/node-wifiscanner/blob/master/examples/geolocation.js
@@ -27,7 +28,6 @@ wifiScanner.scan(function (err, towers) {
         console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
     })
 })*/
-
 
 
 // Setup Restify Server
@@ -92,35 +92,9 @@ bot.dialog('/firstRun', [
     },
     function (session, results) {
  
-        //My home location
+        //kornHill
         //var closest = tree.findClosest(new geo.GeoPoint(22.282832, 114.216016));
-        //console.log(closet);
-        /*
-        wifiScanner.scan(function (err, towers) {
-            if (err) throw err
-            console.log(towers)
-            geoloc(towers, function (err, location) {
-                if (err) throw err
-
-                console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
-                //find the closeset location
-                var closestStore = tree.findClosest(new geo.GeoPoint(location.lat, location.lng))
-                console.log(closestStore)
-                //detect the closet store
-                switch (closestStore) {
-                    //case AberdeenCentre : session.send("%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre", session.userData.name);
-                    case AberdeenCentre: console.log("%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre for Chinese Medicine", results.response); break;
-                    case TaikooShing: console.log("%s, you can visit our store at Shop No.124, First Floor, Cityplaza for Chinese Medicine", results.response); break;
-                    case KwunTong: console.log("%s, you can visit our store at Crocodile Centre, Kwun Tong for Chinese Medicine", results.response); break;
-                    case TsimShaTsui: console.log("%s, you can visit our store at Shop 5, G/F & Basement, Hang Sang Building, Tsim Sha Tsui for Chinese Medicine", results.response); break;
-                    case WhampoaGarden: console.log("%s, you can visit our store at Shop No. G3A on the Ground Floor, Site 2, Whampoa Garden for Chinese Medicine", results.response); break;
-                    case Mongkok: console.log("%s, you can visit our store at Shop No.C1, G/F. & Whole of Mezzanine Floor, Mongkok for Chinese Medicine", results.response); break;
-                    case YuenLong: console.log("%s, you can visit our store at 142 Castle Peak Road,Yuen Long for Chinese Medicine", results.response); break;
-                    case Fanling: console.log("%s, you can visit our store at Shop No. 28B, Level 2, Fanling Town Centre for Chinese Medicine", results.response);
-                }
-            })
-        })*/
-
+        
         // We'll save the prompts result and return control to main through
         // a call to replaceDialog(). We need to use replaceDialog() because
         // we intercepted the original call to main and we want to remove the
@@ -242,6 +216,7 @@ intents.matches('ChineseMedicineEnquiry', [
         //find the closest store that has ChineseMedicineservice
         wifiScanner.scan(function (err, towers) {
             //if (err) throw err;
+            //kornHill GeoPoint(22.282832, 114.216016)
             console.log(towers);
             geoloc(towers, function (err, location) {
                 //if (err) throw err;
