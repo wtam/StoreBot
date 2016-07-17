@@ -153,15 +153,10 @@ intents.matches('BeautyEnquiry', [
         var lipsProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BeautyProduct::Lips');
         var eyesProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BeautyProduct::Eyes');
 
-        //see the result from entityReconginer
-        console.log(faceProduct);
-        console.log(lipsProduct);
-        console.log(eyesProduct);
-
         //check which result has retun, if no retun, its not bull but length is typically 0
         if (faceProduct.length > 0) {
+            console.log(faceProduct);
             //builder.Prompts.text(session, "is BeautyProduct::Face enquiry");
-            //session.send('Here are the Beauty Face products?');
             var reply = new builder.Message().setText(session, "Beauty Face Product: ");
             
             //var reply = new builder.Message();
@@ -190,6 +185,7 @@ intents.matches('BeautyEnquiry', [
             }
             session.send(reply);
         } else if (lipsProduct.length > 0) {
+            console.log(lipsProduct);
             //builder.Prompts.text(session, "is a BeautyProduct.Lips enquiry");
             var reply = new builder.Message().setText(session, "Beauty Lips Product: ");
             if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "lipstick")) {
@@ -197,8 +193,13 @@ intents.matches('BeautyEnquiry', [
             }
             session.send(reply);
         } else if (eyesProduct.length > 0) {
+            console.log(eyesProduct);
             //builder.Prompts.text(session, "is a BeautyProduct.Eyes enquiry");
-            session.send('Here are the Beauty Eyes products');
+            var reply = new builder.Message().setText(session, "Beauty Eyes Product: ");
+            if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "eye shadow")) {
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808664858654.jpg' });
+            }
+            session.send(reply);
         };
     }
 ]);
@@ -206,18 +207,21 @@ intents.matches('BeautyEnquiry', [
 intents.matches('BabyEnquiry', [
 
     function (session, args, next) {
-        console.log(args);
+        //console.log(args);
         //builder.Prompts.text(session, "is a baby enquiry");
         // Resolve and store any entities passed from LUIS.
         var milkProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BabyProduct::MilkPowder');
         var diaperProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BabyProduct::Diapers');
+
         if (milkProduct.length > 0) {
+            console.log(milkProduct);
             var reply = new builder.Message().setText(session, "Baby Milk Product: ");
             if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "milk")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
             }
             session.send(reply);
         } else if (diaperProduct.length > 0) {
+            console.log(diaperProduct);
             var reply = new builder.Message().setText(session, "Baby Diaper Product: ");
             if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "diaper")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
@@ -230,16 +234,17 @@ intents.matches('BabyEnquiry', [
 intents.matches('ChineseMedicineEnquiry', [
 
     function (session, args, next) {
-        console.log(args);
+        //console.log(args);
         //builder.Prompts.text(session, "is a baby enquiry");
         // Resolve and store any entities passed from LUIS.
         var chineseMedicineService = builder.EntityRecognizer.findAllEntities(args.entities, 'ChineseMedicineService');
+        console.log(chineseMedicineService);
         //find the closest store that has ChineseMedicineservice
         wifiScanner.scan(function (err, towers) {
-            if (err) throw err;
+            //if (err) throw err;
             console.log(towers);
             geoloc(towers, function (err, location) {
-                if (err) throw err;
+                //if (err) throw err;
                 console.log(location); // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
                 //find the closeset location
                 var closestStore = tree.findClosest(new geo.GeoPoint(location.lat, location.lng));
