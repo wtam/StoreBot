@@ -16,7 +16,7 @@ var geo = require("geotrouvetou"); //find the nearest geolocation https://github
 var geoloc = require("geocode-wifi");
 var wifiScanner = require('node-wifiscanner'); //https://www.npmjs.com/package/geocode-wifi
 
-/* Not accurate.... need improvement using https://github.com/spark/node-wifiscanner/blob/master/examples/geolocation.js
+// Not accurate.... need improvement using https://github.com/spark/node-wifiscanner/blob/master/examples/geolocation.js
 wifiScanner.scan(function (err, towers) {
     if (err) throw err
     console.log(towers)
@@ -25,7 +25,7 @@ wifiScanner.scan(function (err, towers) {
 
         console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
     })
-})*/
+})
 
 
 
@@ -94,6 +94,7 @@ bot.dialog('/firstRun', [
         //My home location
         //var closest = tree.findClosest(new geo.GeoPoint(22.282832, 114.216016));
         //console.log(closet);
+        /*
         wifiScanner.scan(function (err, towers) {
             if (err) throw err
             console.log(towers)
@@ -117,7 +118,7 @@ bot.dialog('/firstRun', [
                     case Fanling: console.log("%s, you can visit our store at Shop No. 28B, Level 2, Fanling Town Centre for Chinese Medicine", results.response);
                 }
             })
-        })
+        })*/
 
         // We'll save the prompts result and return control to main through
         // a call to replaceDialog(). We need to use replaceDialog() because
@@ -126,7 +127,7 @@ bot.dialog('/firstRun', [
         // the conversation would end since the /firstRun dialog is the only 
         // dialog on the stack.
         session.userData.name = results.response
-        session.send("%s, I can help you to find product from e-Store", session.userData.name);
+        session.send("%s, I can help you to find product from e-Store and medicine service", session.userData.name);
         session.replaceDialog('/');
     }
 ]); 
@@ -161,8 +162,28 @@ intents.matches('BeautyEnquiry', [
             //builder.Prompts.text(session, "is BeautyProduct::Face enquiry");
             //session.send('Here are the Beauty Face products?');
             var reply = new builder.Message().setText(session, "Beauty Face Product: ");
+            
+            //var reply = new builder.Message();
             if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "BB Cream")) {
                 reply.addAttachment({ contentType : 'image/jpeg', contentUrl : 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' });
+                /*
+                //Tryinh to use HeroCard?...
+                reply.attachments.Add(new HeroCard(
+                {
+                    Title: 'You may like this BeautyProduct Face enquiry',
+                    subtitle: 'Loreal BB Cream, HK$140',
+                    images: [
+                        { url: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg', }
+                    ],
+                    contentType: 'application/vnd.microsoft.card.hero',
+                    buttons: [
+                        {
+                            type: 'openURL',
+                            title: 'Add to Shopping Cart',
+                            value: 'http://www.watsons.com.hk/product-l%27oreal/lucent-magique-miracle-bb-cream-30ml/p/BP_272195'
+                        }
+                    ],
+                }));*/
             } else if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "2 way cake")) {
                 reply.addAttachment({ contentType : 'image/jpeg', contentUrl : 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
             }
@@ -205,6 +226,65 @@ intents.matches('BabyEnquiry', [
     }
 ]);
 
+intents.matches('ChineseMedicineEnquiry', [
+
+    function (session, args, next) {
+        console.log(args);
+        //builder.Prompts.text(session, "is a baby enquiry");
+        // Resolve and store any entities passed from LUIS.
+        var chineseMedicineService = builder.EntityRecognizer.findAllEntities(args.entities, 'ChineseMedicineService');
+        //find the closest store that has ChineseMedicineservice
+        wifiScanner.scan(function (err, towers) {
+            if (err) throw err
+            console.log(towers)
+            geoloc(towers, function (err, location) {
+                if (err) throw err
+                console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
+                //find the closeset location
+                var closestStore = tree.findClosest(new geo.GeoPoint(location.lat, location.lng))
+                console.log(closestStore)
+                //recommend to goto the closet store
+                switch (closestStore) {
+                    //case AberdeenCentre : session.send("%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre", session.userData.name);
+                    case AberdeenCentre:
+                        console.log("%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre for Chinese Medicine", session.userData.name);
+                        var reply = new builder.Message().setText(session, "%s, you can visit our store at Shop 6C, Hoi Chu Court, Aberdeen Centre for Chinese Medicine", session.userData.name);
+                        break;
+                    case TaikooShing:
+                        console.log("%s, you can visit our store at Shop No.124, First Floor, Cityplaza for Chinese Medicine", session.userData.name);
+                        var reply = new builder.Message().setText(session, "%s, you can visit our store at Shop No.124, First Floor, Cityplaza for Chinese Medicine", session.userData.name);
+                        break;
+                    case KwunTong:
+                        console.log("%s, you can visit our store at Crocodile Centre, Kwun Tong for Chinese Medicine", session.userData.name);
+                        var reply = new builder.Message().setText(session, "%s, you can visit our store at Crocodile Centre, Kwun Tong for Chinese Medicine", session.userData.name);
+                        break;
+                    case TsimShaTsui:
+                        console.log("%s, you can visit our store at Shop 5, G/F & Basement, Hang Sang Building, Tsim Sha Tsui for Chinese Medicine", session.userData.name);
+                        var reply = new builder.Message().setText(session, "%s, you can visit our store at Shop 5, G/F & Basement, Hang Sang Building, Tsim Sha Tsui for Chinese Medicine", session.userData.name);
+                        break;
+                    case WhampoaGarden:
+                        console.log("%s, you can visit our store at Shop No. G3A on the Ground Floor, Site 2, Whampoa Garden for Chinese Medicine", session.userData.name);
+                        var reply = new builder.Message().setText(session, "%s, you can visit our store at Shop No.G3A on the Ground Floor, Site 2, Whampoa Garden for Chinese Medicine", session.userData.name);
+                        break;
+                    case Mongkok:
+                        console.log("%s, you can visit our store at Shop No.C1, G/F. & Whole of Mezzanine Floor, Mongkok for Chinese Medicine", session.userData.name);
+                        var reply = new builder.Message().setText(session, "%s, you can visit our store at Shop No.C1, G/F. & Whole of Mezzanine Floor, Mongkok for Chinese Medicine", session.userData.name);
+                        break;
+                    case YuenLong:
+                        console.log("%s, you can visit our store at 142 Castle Peak Road,Yuen Long for Chinese Medicine", session.userData.name);
+                        var reply = new builder.Message().setText(session, "%s, you can visit our store at 142 Castle Peak Road,Yuen Long for Chinese Medicine", session.userData.name);
+                        break;
+                    case Fanling:
+                        console.log("%s, you can visit our store at Shop No. 28B, Level 2, Fanling Town Centre for Chinese Medicine", session.userData.name);
+                        var reply = new builder.Message().setText(session, "%s, you can visit our store at Shop No. 28B, Level 2, Fanling Town Centre for Chinese Medicine", session.userData.name);
+                        break;
+                };
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/h68/h1e/8835002794014.jpg' });
+                session.send(reply);
+            }) //geoloc
+        })//wifi scanner
+    }
+]);
 
 intents.onDefault(builder.DialogAction.send("You can say something like: Do you have any milk powder for Baby?"));
 
