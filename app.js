@@ -16,7 +16,7 @@ var geo = require("geotrouvetou"); //find the nearest geolocation https://github
 var geoloc = require("geocode-wifi");
 // Not accurate.... need improvement using https://github.com/spark/node-wifiscanner/blob/master/examples/geolocation.js
 //var wifiScanner = require('node-wifiscanner'); //https://www.npmjs.com/package/geocode-wifi
-// need to update netsh  and this seems able t ofind surrounding => netsh wlan show networks mode=Bssid
+// Command: netsh wlan show networks mode=Bssid
 // *****Importance: the result still not show full wifi list unless clicking the laptop wifi icon to ensure yo usee the other wifi network
 var wifiScanner = require('node-wifi-scanner'); //https://github.com/ancasicolica/node-wifi-scanner
 /*
