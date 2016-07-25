@@ -34,8 +34,8 @@ wifiScanner.scan(function (err, towers) {
 })*/
 //start ApplicationInsight
 var appInsights = require("applicationinsights"); 
-appInsights.setup("<instrumentation_key>").start();
-var appInsightClient = appInsights.getClient("<other_instrumentation_key>");
+appInsights.setup("e3f5eb91-50e1-4517-a46a-32ee83d08e9b").start();
+var appInsightClient = appInsights.getClient();
 
 
 // Setup Restify Server
