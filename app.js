@@ -32,6 +32,10 @@ wifiScanner.scan(function (err, towers) {
         console.log(location) // => { lat: 38.0690894, lng: -122.8069356, accuracy: 42 } 
     })
 })*/
+//start ApplicationInsight
+var appInsights = require("applicationinsights"); 
+appInsights.setup("<instrumentation_key>").start();
+var appInsightClient = appInsights.getClient("<other_instrumentation_key>");
 
 
 // Setup Restify Server
@@ -134,6 +138,7 @@ intents.matches('BeautyEnquiry', [
         //check which result has retun, if no retun, its not bull but length is typically 0
         if (faceProduct.length > 0) {
             console.log(faceProduct);
+         
             //builder.Prompts.text(session, "is BeautyProduct::Face enquiry");
             var reply = new builder.Message().setText(session, "Beauty Face Product: ");
             
@@ -158,8 +163,12 @@ intents.matches('BeautyEnquiry', [
                         }
                     ],
                 }));*/
+                //appInsight  custom event
+                appInsightClient.trackEvent("BeautyFaceProductEnquiry::BBCream");
             } else if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "2 way cake")) {
-                reply.addAttachment({ contentType : 'image/jpeg', contentUrl : 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
+                //appInsight  custom event
+                appInsightClient.trackEvent("BeautyFaceProductEnquiry::2-way-cake");
             }
             session.send(reply);
         } else if (lipsProduct.length > 0) {
@@ -168,6 +177,8 @@ intents.matches('BeautyEnquiry', [
             var reply = new builder.Message().setText(session, "Beauty Lips Product: ");
             if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "lipstick")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
+                //appInsight  custom event
+                appInsightClient.trackEvent("BeautyFaceProductEnquiry::Lips");
             }
             session.send(reply);
         } else if (eyesProduct.length > 0) {
@@ -176,6 +187,8 @@ intents.matches('BeautyEnquiry', [
             var reply = new builder.Message().setText(session, "Beauty Eyes Product: ");
             if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "eye shadow")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808664858654.jpg' });
+                //appInsight  custom event
+                appInsightClient.trackEvent("BeautyFaceProductEnquiry::Eyes");
             }
             session.send(reply);
         };
@@ -196,6 +209,8 @@ intents.matches('BabyEnquiry', [
             var reply = new builder.Message().setText(session, "Baby Milk Product: ");
             if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "milk")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
+                //appInsight  custom event
+                appInsightClient.trackEvent("BabyProductEnquiry::MilkPowder");
             }
             session.send(reply);
         } else if (diaperProduct.length > 0) {
@@ -203,6 +218,8 @@ intents.matches('BabyEnquiry', [
             var reply = new builder.Message().setText(session, "Baby Diaper Product: ");
             if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "diaper")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
+                //appInsight  custom event
+                appInsightClient.trackEvent("BabyProductEnquiry::Diapers");
             }
             session.send(reply);
         };
@@ -217,6 +234,10 @@ intents.matches('ChineseMedicineEnquiry', [
         // Resolve and store any entities passed from LUIS.
         var chineseMedicineService = builder.EntityRecognizer.findAllEntities(args.entities, 'ChineseMedicineService');
         console.log(chineseMedicineService);
+
+        //appInsight  custom event
+        appInsightClient.trackEvent("ChineseMedicinetEnquiry");
+
         //find the closest store that has ChineseMedicineservice
         wifiScanner.scan(function (err, towers) {
             //if (err) throw err;
