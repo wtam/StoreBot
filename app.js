@@ -164,11 +164,11 @@ intents.matches('BeautyEnquiry', [
                     ],
                 }));*/
                 //appInsight  custom event
-                appInsightClient.trackEvent("BeautyFaceProductEnquiry::BBCream");
+                appInsightClient.trackEvent("BeautyFaceProductEnquiryBBCream");
             } else if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "2 way cake")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
                 //appInsight  custom event
-                appInsightClient.trackEvent("BeautyFaceProductEnquiry::2-way-cake");
+                appInsightClient.trackEvent("BeautyFaceProductEnquiry2WayCake");
             }
             session.send(reply);
         } else if (lipsProduct.length > 0) {
@@ -178,7 +178,7 @@ intents.matches('BeautyEnquiry', [
             if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "lipstick")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
                 //appInsight  custom event
-                appInsightClient.trackEvent("BeautyFaceProductEnquiry::Lips");
+                appInsightClient.trackEvent("BeautyFaceProductEnquiryLips");
             }
             session.send(reply);
         } else if (eyesProduct.length > 0) {
@@ -188,7 +188,7 @@ intents.matches('BeautyEnquiry', [
             if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "eye shadow")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808664858654.jpg' });
                 //appInsight  custom event
-                appInsightClient.trackEvent("BeautyFaceProductEnquiry::Eyes");
+                appInsightClient.trackEvent("BeautyFaceProductEnquiryEyes");
             }
             session.send(reply);
         };
@@ -210,7 +210,7 @@ intents.matches('BabyEnquiry', [
             if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "milk")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
                 //appInsight  custom event
-                appInsightClient.trackEvent("BabyProductEnquiry::MilkPowder");
+                appInsightClient.trackEvent("BabyProductEnquiryMilkPowder");
             }
             session.send(reply);
         } else if (diaperProduct.length > 0) {
@@ -219,7 +219,7 @@ intents.matches('BabyEnquiry', [
             if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "diaper")) {
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
                 //appInsight  custom event
-                appInsightClient.trackEvent("BabyProductEnquiry::Diapers");
+                appInsightClient.trackEvent("BabyProductEnquiryDiapers");
             }
             session.send(reply);
         };
