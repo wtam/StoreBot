@@ -34,9 +34,12 @@ wifiScanner.scan(function (err, towers) {
 })*/
 //start ApplicationInsight
 var appInsights = require("applicationinsights"); 
-appInsights.setup("e3f5eb91-50e1-4517-a46a-32ee83d08e9b").start();
+process.env.APPINSIGHTS_INSTRUMENTATIONKEY = "e3f5eb91-50e1-4517-a46a-32ee83d08e9b";
+appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 var appInsightClient = appInsights.getClient();
 
+//require speech.js
+var speech = require('./speech.js');
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -94,15 +97,28 @@ bot.use({
         }
     }
 });
+
 bot.dialog('/firstRun', [
     function (session) {
         builder.Prompts.text(session, "Hello, I'm a Store Bot.....What's your name?");
+        //builder.Prompts.text(session, "妮妲, 下周或到訪 做好打風準備");
+        //var str = "妮妲, 下周或到訪 做好打風準備";
+        var str = "Hello, I'm a Store Bot.....What's your name?";
+        /*
+        //console.log('Converting from text -> speech');
+        speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
+            if (err) return console.log(err);
+            console.log('Wrote out: ' + 'voiceRespond.wav');
+            var reply = new builder.Message().setText(session, str);
+            reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'file://voiceRespond.wav' } });
+            session.send(reply);
+        });*/
     },
     function (session, results) {
- 
+
         //kornHill
         //var closest = tree.findClosest(new geo.GeoPoint(22.282832, 114.216016));
-        
+
         // We'll save the prompts result and return control to main through
         // a call to replaceDialog(). We need to use replaceDialog() because
         // we intercepted the original call to main and we want to remove the
@@ -110,6 +126,14 @@ bot.dialog('/firstRun', [
         // the conversation would end since the /firstRun dialog is the only 
         // dialog on the stack.
         session.userData.name = results.response
+        /*
+        var str = session.userData.name + "I can help you to find product from e- Store and medicine service";
+        //console.log('Converting from text -> speech');
+        speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
+            if (err) return console.log(err);
+            console.log('Wrote out: ' + 'voiceRespond.wav');
+            builder.Prompts.attachment('voiceRespond.wav');
+        }); */
         session.send("%s, I can help you to find product from e-Store and medicine service", session.userData.name);
         session.replaceDialog('/');
     }
@@ -144,9 +168,16 @@ intents.matches('BeautyEnquiry', [
             
             //var reply = new builder.Message();
             if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "BB Cream")) {
-                reply.addAttachment({ contentType : 'image/jpeg', contentUrl : 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' });
+                var str = "We've Lorea BB Cream, would you like to try it?";
+                speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
+                    if (err) return console.log(err);
+                    console.log('Wrote out: ' + 'voiceRespond.wav');
+                });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' });
+                //reply.addAttachment({ contentType: 'audio/wav', content: { "audio" : './voiceRespond.wav' } });
                 /*
                 //Tryinh to use HeroCard?...
+                
                 reply.attachments.Add(new HeroCard(
                 {
                     Title: 'You may like this BeautyProduct Face enquiry',
@@ -289,6 +320,20 @@ intents.matches('ChineseMedicineEnquiry', [
                 session.send(reply);
             }) //geoloc
         })//wifi scanner
+    }
+]);
+
+intents.matches('Help', [
+
+    function (session, args, next) {
+        //console.log(args);
+        var str = session.userData.name + ", I can help you to find product from e- Store and medicine service.";
+        var reply = new builder.Message().setText(session, str);
+       
+        //appInsight  custom event
+         appInsightClient.trackEvent("Help");
+            
+        session.send(reply);       
     }
 ]);
 
