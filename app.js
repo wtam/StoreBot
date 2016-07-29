@@ -174,7 +174,7 @@ intents.matches('BeautyEnquiry', [
                     console.log('Wrote out: ' + 'voiceRespond.wav');
                 });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' });
-                //reply.addAttachment({ contentType: 'audio/wav', content: { "audio" : './voiceRespond.wav' } });
+                //reply.addAttachment({ contentType: 'audio/wav', contentUrl: { "audio" : 'http://storebotwebapp.azurewebsites.net/voiceRespond.wav' } });
                 /*
                 //Tryinh to use HeroCard?...
                 

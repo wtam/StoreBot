@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\typings\node\node.d.ts" />
+    <Content Include="index.html" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <None Include="StoreBotWebApp.pubxml" />
