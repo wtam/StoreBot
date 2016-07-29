@@ -57,8 +57,8 @@ server.post('/api/messages', connector.listen());
 //Serve a static web page
 server.get(/.*/, restify.serveStatic({
     'directory': '.',
-    'default': 'index.html',
-    //'respond': 'voiceRespond.wav'
+    //'default': 'index.html',
+    'default': 'voiceRespond.wav'
 }));
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
@@ -110,15 +110,15 @@ bot.dialog('/firstRun', [
         //builder.Prompts.text(session, "妮妲, 下周或到訪 做好打風準備");
         //var str = "妮妲, 下周或到訪 做好打風準備";
         var str = "Hello, I'm a Store Bot.....What's your name?";
-        /*
+        
         //console.log('Converting from text -> speech');
         speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
             if (err) return console.log(err);
             console.log('Wrote out: ' + 'voiceRespond.wav');
             var reply = new builder.Message().setText(session, str);
-            reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'file://voiceRespond.wav' } });
+            reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'http://storebotwebapp.azurewebsites.net/voiceRespond.wav' } });
             session.send(reply);
-        });*/
+        });
     },
     function (session, results) {
 
