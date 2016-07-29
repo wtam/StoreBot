@@ -54,6 +54,12 @@ var connector = new builder.ChatConnector({
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
+//Serve a static web page
+server.get(/.*/, restify.serveStatic({
+    'directory': '.',
+    'default': 'index.html',
+    //'respond': 'voiceRespond.wav'
+}));
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
 //This is the StorBotLuis
@@ -338,4 +344,7 @@ intents.matches('Help', [
 ]);
 
 intents.onDefault(builder.DialogAction.send("You can say something like: Do you have any milk powder for Baby?"));
+
+
+
 
