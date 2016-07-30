@@ -338,17 +338,25 @@ intents.matches('ChineseMedicineEnquiry', [
 intents.matches('CustomerRespond', [
     function (session, args, next) {
         console.log(args);    
-        if (builder.EntityRecognizer.findEntity(args.entities, 'CustomerRespond::DisLike')) {
-            console.log("Customer Not Like it");
+        //var dislike = builder.EntityRecognizer.findAllEntities(args.entities, 'CustomerDisLike');
+        //var like = builder.EntityRecognizer.findAllEntities(args.entities, 'CustomerLike');
+
+        if (builder.EntityRecognizer.findEntity(args.entities, 'DisLike')) {
+            console.log(args);
             //appInsight  custom event
-            appInsightClient.trackEvent("CustomerDisLike");
-            //session.send(reply);
-        } else if (builder.EntityRecognizer.findEntity(args.entities, 'CustomerRespond::Like')) {
-            console.log("Customer Like it");
+            appInsightClient.trackEvent("CustomerDisatisfaction");
+            var str = ":(";
+            var reply = new builder.Message().setText(session, str);
+            reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://data2.whicdn.com/images/69773875/large.jpg' });
+        } else if (builder.EntityRecognizer.findEntity(args.entities, 'Like')) {
+            console.log(args);
             //appInsight  custom event
-            appInsightClient.trackEvent("CustomerLike");
-            //session.send(reply);
+            appInsightClient.trackEvent("CustomerSatisfaction");
+            var str = ":)";
+            var reply = new builder.Message().setText(session, str);
+            reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://blog.ccbcmd.edu/vwright/files/2013/12/DespicableMe-Minions-Hoorah-600x222.jpg' });
         }
+        session.send(reply);
     }
 ]);
 
