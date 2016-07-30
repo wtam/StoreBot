@@ -15,7 +15,7 @@ var hubname = 'storeboteventhub'; // Replace with your Event Hub name
 // Shared Access Key parameters
 // Replace with the Policy Name and Primary (or Secondary) Key from your Event Hub configuration
 var my_key_name = 'send';
-var my_key = 'yyGJAfKhM8jBf4Iw/lianDbCKzX2HqF4SvOz0elwlGs=';
+var my_key = 'aND782fnI6UugOobFYmAz+OJU4eTDHAjgI6hKf+qeEk=';
 
 // Sample payload to send
 //var payload = { Temperature: 1.0, Humidity: 0.25 };
