@@ -19,7 +19,7 @@ var my_key = 'T5sASDwt0RdN2sCMTmB1uyWVxqcEA4aZUxn4+bOwIKg=';
 
 // Sample payload to send
 //var payload = { Temperature: 1.0, Humidity: 0.25 };
-var payload = {username: "Will", ServiceIntent: "BeautyFaceProductEnquiryLips", ServiceScore: 0.5};
+var payload = {username: "Will", serviceIntent: "BeautyFaceProductEnquiryLips", serviceScore: 0.5};
 
 
 // Prefix for device names
