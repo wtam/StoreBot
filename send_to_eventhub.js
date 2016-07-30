@@ -122,7 +122,7 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
             "Content-Length": b.length,
             "content-type": "application/json",
         },
-        body: JSON.stringify(b)
+        body: b
     });
 /*
         // Write the payload
