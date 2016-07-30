@@ -68,37 +68,41 @@ process.on('exit', function () {
 */
 
 exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceScore) {
-   // for (var i = 0; i < nb; i++) {
+    // for (var i = 0; i < nb; i++) {
 
-        // Pick a random device and its corresponding SAS key
-        //deviceid = Math.floor((Math.random() * 100));
-        deviceid = username;
-        //devicename = deviceprefix + deviceid;
-        devicename = "StoreBot0";
-        device_sas = device_tokens[0];
+    // Pick a random device and its corresponding SAS key
+    //deviceid = Math.floor((Math.random() * 100));
+    deviceid = username;
+    //devicename = deviceprefix + deviceid;
+    devicename = "StoreBot0";
+    device_sas = device_tokens[0];
 
-        // Assemble BSON payload
-        //payload.Temperature++;
-        payload.time = new Date().toISOString();
-        payload.username = username;
-        payload.serviceIntent = ServiceIntent;
-        payload.serviceScore = ServiceScore;
-        console.log(payload);
-        var b = BSON.serialize(payload);
+    // Assemble BSON payload
+    //payload.Temperature++;
+    payload.time = new Date().toISOString();
+    payload.username = username;
+    payload.serviceIntent = ServiceIntent;
+    payload.serviceScore = ServiceScore;
+    console.log(payload);
+    //var b = BSON.serialize(payload);
+    var b = JSON.stringify(payload);
+    console.log(b);
 
-        // Create the HTTP/S request
-        var options = {
-            hostname: namespace + '.servicebus.windows.net',
-            port: 443,
-            path: '/' + hubname + '/publishers/' + devicename + '/messages',
-            method: 'POST',
-            headers: {
-                'Authorization': device_sas,
-                'Content-Length': b.length,
-                'Content-Type': 'application/atom+xml;type=entry;charset=utf-8'
-            }
-        };
+    // Create the HTTP/S request
+    var options = {
+        hostname: namespace + '.servicebus.windows.net',
+        port: 443,
+        path: '/' + hubname + '/publishers/' + devicename + '/messages',
+        method: 'POST',
+        headers: {
+            'Authorization': device_sas,
+            'Content-Length': b.length,
+            //'Content-Type': 'application/atom+xml;type=entry;charset=utf-8'
+            'Content-Type': 'application/json'
+        }
+    };
 
+    /*
         // Send the request
         var req = https.request(options, function (res) {
             //console.log("statusCode: ", res.statusCode);
@@ -107,12 +111,24 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
             });
         }).on('error', function (e) {
             console.error(e);
-        });
+        });*/
 
+    var req = https.request({
+        url: 'https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages', my_key_name, my_key,
+        method: "POST",
+        json: true,
+        headers: {
+            "Authorization": device_sas,
+            "Content-Length": b.length,
+            "content-type": "application/json",
+        },
+        body: JSON.stringify(b)
+    });
+/*
         // Write the payload
-        req.write(b);
+        req.write(JSON.stringify(b));
         req.end();
-   // }
+   // } */
 }
 
 /*
