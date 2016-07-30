@@ -41,6 +41,9 @@ var appInsightClient = appInsights.getClient();
 //require speech.js
 var speech = require('./speech.js');
 
+//Send telemetry to Evenhub
+var send_to_StorebotEventHub = require('./send_to_eventhub.js');
+
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
@@ -201,12 +204,14 @@ intents.matches('BeautyEnquiry', [
                 }));*/
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryBBCream");
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryBBCream", 0.5);
             } else if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "2 way cake")) {
                 var str = "We've Lorea true match two way powder, would you like to try it?";
                 var reply = new builder.Message().setText(session, str);
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiry2WayCake");
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiry2WayCake", 0.5); //change 0.5 to avg sentinment
             }
             session.send(reply);
         } else if (lipsProduct.length > 0) {
@@ -218,6 +223,7 @@ intents.matches('BeautyEnquiry', [
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryLips");
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiry2WayCake", 0.5); //change 0.5 to avg sentinment
             }
             session.send(reply);
         } else if (eyesProduct.length > 0) {
@@ -229,6 +235,7 @@ intents.matches('BeautyEnquiry', [
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808664858654.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryEyes");
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryEyes", 0.5); //change 0.5 to avg sentinment
             }
             session.send(reply);
         };
@@ -253,6 +260,7 @@ intents.matches('BabyEnquiry', [
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryMilkPowder");
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryMilkPowder", 0.5); //change 0.5 to avg sentinment
             }
             session.send(reply);
         } else if (diaperProduct.length > 0) {
@@ -263,6 +271,7 @@ intents.matches('BabyEnquiry', [
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryDiapers");
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryDiapers", 0.5); //change 0.5 to avg sentinment
             }
             session.send(reply);
         };
@@ -280,6 +289,7 @@ intents.matches('ChineseMedicineEnquiry', [
 
         //appInsight  custom event
         appInsightClient.trackEvent("ChineseMedicinetEnquiry");
+        send_to_StorebotEventHub.sendrequests(session.userData.name, "ChineseMedicinetEnquiry", 0.5); //change 0.5 to avg sentinment
 
         //find the closest store that has ChineseMedicineservice
         wifiScanner.scan(function (err, towers) {
@@ -345,6 +355,7 @@ intents.matches('CustomerRespond', [
             console.log(args);
             //appInsight  custom event
             appInsightClient.trackEvent("CustomerDisatisfaction");
+            send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerDisatisfaction", 0.1); //change 0.1 to avg sentinment
             var str = ":(";
             var reply = new builder.Message().setText(session, str);
             reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://data2.whicdn.com/images/69773875/large.jpg' });
@@ -352,6 +363,7 @@ intents.matches('CustomerRespond', [
             console.log(args);
             //appInsight  custom event
             appInsightClient.trackEvent("CustomerSatisfaction");
+            send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerSatisfaction", 0.9); //change 0.9 to avg sentinmentsend_to_StorebotEventHub(1, "CustomerSatisfaction", 0.9); //change 0.9 to avg sentinment
             var str = ":)";
             var reply = new builder.Message().setText(session, str);
             reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://blog.ccbcmd.edu/vwright/files/2013/12/DespicableMe-Minions-Hoorah-600x222.jpg' });
@@ -369,7 +381,7 @@ intents.matches('Help', [
        
         //appInsight  custom event
          appInsightClient.trackEvent("Help");
-            
+         send_to_StorebotEventHub.sendrequests(session.userData.name, "Help", 0.5); //change 0.5 to avg sentinment   
         session.send(reply);       
     }
 ]);
