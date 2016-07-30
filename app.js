@@ -110,15 +110,15 @@ bot.dialog('/firstRun', [
         //builder.Prompts.text(session, "妮妲, 下周或到訪 做好打風準備");
         //var str = "妮妲, 下周或到訪 做好打風準備";
         var str = "Hello, I'm a Store Bot.....What's your name?";
-        
+        /*
         //console.log('Converting from text -> speech');
         speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
             if (err) return console.log(err);
             console.log('Wrote out: ' + 'voiceRespond.wav');
             var reply = new builder.Message().setText(session, str);
-            reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'http://storebotwebapp.azurewebsites.net/voiceRespond.wav' } });
+            reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'http://storebotwebapp.azurewebsites.net' } });
             session.send(reply);
-        });
+        });*/
     },
     function (session, results) {
 
@@ -169,19 +169,17 @@ intents.matches('BeautyEnquiry', [
         if (faceProduct.length > 0) {
             console.log(faceProduct);
          
-            //builder.Prompts.text(session, "is BeautyProduct::Face enquiry");
-            var reply = new builder.Message().setText(session, "Beauty Face Product: ");
-            
-            //var reply = new builder.Message();
+            //builder.Prompts.text(session, "is BeautyProduct::Face enquiry");  
             if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "BB Cream")) {
                 var str = "We've Lorea BB Cream, would you like to try it?";
+                var reply = new builder.Message().setText(session, str);
                 speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
                     if (err) return console.log(err);
                     console.log('Wrote out: ' + 'voiceRespond.wav');
                 });
-                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' }, { contentType: 'audio/wav', contentUrl: { "audio": 'http://storebotwebapp.azurewebsites.net/voiceRespond.wav' } });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' }, { contentType: 'audio/wav', contentUrl: { "audio": 'http://storebotwebapp.azurewebsites.net/voiceRespond.wav' } });
                 
-                reply.addAttachment({ contentType: 'audio/wav', contentUrl: 'http://storebotwebapp.azurewebsites.net/voiceRespond.wav'} );
+                //reply.addAttachment({ contentType: 'audio/wav', contentUrl: 'http://storebotwebapp.azurewebsites.net'} );
                 /*
                 //Tryinh to use HeroCard?...
                 
@@ -204,6 +202,8 @@ intents.matches('BeautyEnquiry', [
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryBBCream");
             } else if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "2 way cake")) {
+                var str = "We've Lorea true match two way powder, would you like to try it?";
+                var reply = new builder.Message().setText(session, str);
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiry2WayCake");
@@ -212,8 +212,9 @@ intents.matches('BeautyEnquiry', [
         } else if (lipsProduct.length > 0) {
             console.log(lipsProduct);
             //builder.Prompts.text(session, "is a BeautyProduct.Lips enquiry");
-            var reply = new builder.Message().setText(session, "Beauty Lips Product: ");
             if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "lipstick")) {
+                var str = "We've Maybelline watershine pure lip, would you like to try it?";
+                var reply = new builder.Message().setText(session, str);
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryLips");
@@ -222,8 +223,9 @@ intents.matches('BeautyEnquiry', [
         } else if (eyesProduct.length > 0) {
             console.log(eyesProduct);
             //builder.Prompts.text(session, "is a BeautyProduct.Eyes enquiry");
-            var reply = new builder.Message().setText(session, "Beauty Eyes Product: ");
             if (builder.EntityRecognizer.findAllEntities(lipsProduct.entities, "eye shadow")) {
+                var str = "We've Maybelline Big Eye shadow pink, would you like to try it?";
+                var reply = new builder.Message().setText(session, str);
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808664858654.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryEyes");
@@ -244,8 +246,10 @@ intents.matches('BabyEnquiry', [
 
         if (milkProduct.length > 0) {
             console.log(milkProduct);
-            var reply = new builder.Message().setText(session, "Baby Milk Product: ");
+            //var reply = new builder.Message().setText(session, "Baby Milk Product: ");
             if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "milk")) {
+                var str = "How about Friso Gold Baby Milk?";
+                var reply = new builder.Message().setText(session, str);
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryMilkPowder");
@@ -253,8 +257,9 @@ intents.matches('BabyEnquiry', [
             session.send(reply);
         } else if (diaperProduct.length > 0) {
             console.log(diaperProduct);
-            var reply = new builder.Message().setText(session, "Baby Diaper Product: ");
             if (builder.EntityRecognizer.findAllEntities(milkProduct.entities, "diaper")) {
+                var str = "How about Pampers baby diaper?";
+                var reply = new builder.Message().setText(session, str);
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryDiapers");
