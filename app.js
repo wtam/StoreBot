@@ -335,6 +335,23 @@ intents.matches('ChineseMedicineEnquiry', [
     }
 ]);
 
+intents.matches('CustomerRespond', [
+    function (session, args, next) {
+        console.log(args);    
+        if (builder.EntityRecognizer.findEntity(args.entities, 'CustomerRespond::DisLike')) {
+            console.log("Customer Not Like it");
+            //appInsight  custom event
+            appInsightClient.trackEvent("CustomerDisLike");
+            //session.send(reply);
+        } else if (builder.EntityRecognizer.findEntity(args.entities, 'CustomerRespond::Like')) {
+            console.log("Customer Like it");
+            //appInsight  custom event
+            appInsightClient.trackEvent("CustomerLike");
+            //session.send(reply);
+        }
+    }
+]);
+
 intents.matches('Help', [
 
     function (session, args, next) {
