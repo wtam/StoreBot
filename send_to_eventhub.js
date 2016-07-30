@@ -79,7 +79,7 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
 
         // Assemble BSON payload
         //payload.Temperature++;
-        payload.time = moment().day.time;
+        payload.time = new Date().toISOString();
         payload.username = username;
         payload.serviceIntent = ServiceIntent;
         payload.serviceScore = ServiceScore;
