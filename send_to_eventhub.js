@@ -16,6 +16,7 @@ var hubname = 'storeboteventhub'; // Replace with your Event Hub name
 // Replace with the Policy Name and Primary (or Secondary) Key from your Event Hub configuration
 var my_key_name = 'send';
 var my_key = 'T5sASDwt0RdN2sCMTmB1uyWVxqcEA4aZUxn4+bOwIKg=';
+//Endpoint=sb://storeboteventhub-ns.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=T5sASDwt0RdN2sCMTmB1uyWVxqcEA4aZUxn4+bOwIKg=
 
 // Sample payload to send
 //var payload = { Temperature: 1.0, Humidity: 0.25 };
@@ -53,6 +54,7 @@ var deviceid;
     //devicename = deviceprefix + i;
 devicename = "StoreBot0";
 device_tokens.push(create_sas_token('https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages', my_key_name, my_key));
+//device_tokens.push(create_sas_token('Endpoint=sb://storeboteventhub-ns.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=T5sASDwt0RdN2sCMTmB1uyWVxqcEA4aZUxn4+bOwIKg=', my_key_name, my_key));
 //}
 
 // Set up a timer to measure total execution time
@@ -76,6 +78,7 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
     //devicename = deviceprefix + deviceid;
     devicename = "StoreBot0";
     device_sas = device_tokens[0];
+    //console.log("Device Token: " + device_tokens[0]);
 
     // Assemble BSON payload
     //payload.Temperature++;
@@ -94,15 +97,16 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
         port: 443,
         path: '/' + hubname + '/publishers/' + devicename + '/messages',
         method: 'POST',
+        json: true,
         headers: {
             'Authorization': device_sas,
             'Content-Length': b.length,
             //'Content-Type': 'application/atom+xml;type=entry;charset=utf-8'
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         }
     };
 
-    /*
+    
         // Send the request
         var req = https.request(options, function (res) {
             //console.log("statusCode: ", res.statusCode);
@@ -111,8 +115,8 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
             });
         }).on('error', function (e) {
             console.error(e);
-        });*/
-
+        });
+/*
     var req = https.request({
         url: 'https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages', my_key_name, my_key,
         method: "POST",
@@ -123,12 +127,15 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
             "content-type": "application/json",
         },
         body: b
-    });
-/*
+    }).on('error', function (e) {
+            console.error(e);
+        });
+*/
         // Write the payload
-        req.write(JSON.stringify(b));
+        //req.write(JSON.stringify(b));
+        req.write(b);
         req.end();
-   // } */
+    //} 
 }
 
 /*

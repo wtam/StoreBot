@@ -12,7 +12,7 @@ For a complete walkthrough of creating this bot see the article below.
 var builder = require('botbuilder');
 var restify = require('restify');
 var geo = require("geotrouvetou"); //find the nearest geolocation https://github.com/jbpin/geo-trouvetou 
-//set up for GPS
+//set up for GPS, current implementation assuming use in native client that impletment from Bot's Direct API
 var geoloc = require("geocode-wifi");
 // Not accurate.... need improvement using https://github.com/spark/node-wifiscanner/blob/master/examples/geolocation.js
 //var wifiScanner = require('node-wifiscanner'); //https://www.npmjs.com/package/geocode-wifi
@@ -38,8 +38,11 @@ process.env.APPINSIGHTS_INSTRUMENTATIONKEY = "e3f5eb91-50e1-4517-a46a-32ee83d08e
 appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 var appInsightClient = appInsights.getClient();
 
-//require speech.js
+// require speech.js
 var speech = require('./speech.js');
+// require play.js to play audio on native client which is botframework emulator for this case
+// source from https://github.com/Marak/play.js/
+var player = require('audio-play');
 
 //Send telemetry to Evenhub
 var send_to_StorebotEventHub = require('./send_to_eventhub.js');
@@ -113,15 +116,17 @@ bot.dialog('/firstRun', [
         //builder.Prompts.text(session, "妮妲, 下周或到訪 做好打風準備");
         //var str = "妮妲, 下周或到訪 做好打風準備";
         var str = "Hello, I'm a Store Bot.....What's your name?";
-        /*
+        
         //console.log('Converting from text -> speech');
         speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
             if (err) return console.log(err);
             console.log('Wrote out: ' + 'voiceRespond.wav');
-            var reply = new builder.Message().setText(session, str);
-            reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'http://storebotwebapp.azurewebsites.net' } });
-            session.send(reply);
-        });*/
+            play('./voiceRespond.wav').play();
+     
+            //var reply = new builder.Message().setText(session, str);
+            //reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'http://storebotwebapp.azurewebsites.net' } });
+            //session.send(reply);
+        });
     },
     function (session, results) {
 
@@ -366,7 +371,9 @@ intents.matches('CustomerRespond', [
             send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerSatisfaction", 0.9); //change 0.9 to avg sentinmentsend_to_StorebotEventHub(1, "CustomerSatisfaction", 0.9); //change 0.9 to avg sentinment
             var str = ":)";
             var reply = new builder.Message().setText(session, str);
-            reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://blog.ccbcmd.edu/vwright/files/2013/12/DespicableMe-Minions-Hoorah-600x222.jpg' });
+            //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://blog.ccbcmd.edu/vwright/files/2013/12/DespicableMe-Minions-Hoorah-600x222.jpg' });
+            reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'https://gladysenglishclass.files.wordpress.com/2014/03/011813-despicableme-minions-hoorah-600x222.jpg?w=714' });
+
         }
         session.send(reply);
     }
