@@ -31,7 +31,7 @@ var deviceprefix = 'StoeBot-';
 
 function create_sas_token(uri, key_name, key) {
     // Token expires in one hour
-    var expiry = moment().add(1, 'hours').unix();
+    var expiry = moment().add(10, 'years').unix();
 
     var string_to_sign = encodeURIComponent(uri) + '\n' + expiry;
     var hmac = crypto.createHmac('sha256', key);
