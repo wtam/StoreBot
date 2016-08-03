@@ -30,7 +30,7 @@ var deviceprefix = 'StoeBot-';
 // See http://msdn.microsoft.com/library/azure/dn170477.aspx
 
 function create_sas_token(uri, key_name, key) {
-    // Token expires in one hour
+    // Token expires in one hour -> 10 yrs
     var expiry = moment().add(10, 'years').unix();
 
     var string_to_sign = encodeURIComponent(uri) + '\n' + expiry;
@@ -68,7 +68,6 @@ process.on('exit', function () {
 /*
 ** Send a batch of requests to the Event Hub
 */
-
 exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceScore) {
     // for (var i = 0; i < nb; i++) {
 
@@ -82,7 +81,12 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
 
     // Assemble BSON payload
     //payload.Temperature++;
-    payload.time = new Date().toISOString();
+    //payload.time = new Date().toISOString();
+    //console.log(payload.time);
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    var localISOTime = (new Date(Date.now() - tzoffset)).toISOString();
+    payload.time = localISOTime;
+    //console.log(localISOTime);
     payload.username = username;
     payload.serviceIntent = ServiceIntent;
     payload.serviceScore = ServiceScore;
