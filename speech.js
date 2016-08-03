@@ -6,10 +6,10 @@
     var clientSecret = '3c3cb8d386544dabb9cc5cf7f93eb799'; // API key from Azure marketplace
     var accessToken = null;
 
-    var str = 'This is a cool demo to call Microsoft text to speach service in Node.js.';
+    var str = 'This is a demo to call Microsoft text to speach service in Node.js.';
 
-    console.log('Converting from text -> speech -> text.');
-    console.log('Input text: "' + str + '"');
+    //console.log('Converting from text -> speech -> text.');
+    //console.log('Input text: "' + str + '"');
 
     getAccessToken(clientId, clientSecret, function (err, accessToken) {
         if (err) return console.log(err);

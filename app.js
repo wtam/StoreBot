@@ -42,7 +42,8 @@ var appInsightClient = appInsights.getClient();
 var speech = require('./speech.js');
 // require play.js to play audio on native client which is botframework emulator for this case
 // source from https://github.com/Marak/play.js/
-var player = require('audio-play');
+//var player = require('play-sound')(opts = { player: "wmplayer.exe"});
+//player.play('voiceRespond.wav', function (err) {console.log(err) });
 
 //Send telemetry to Evenhub
 var send_to_StorebotEventHub = require('./send_to_eventhub.js');
@@ -61,9 +62,12 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 //Serve a static web page
+//server.get(/.*/, restify.serveStatic({
+//    'directory': '.',
+//    'default': 'index.html',
+//}));
 server.get(/.*/, restify.serveStatic({
     'directory': '.',
-    //'default': 'index.html',
     'default': 'voiceRespond.wav'
 }));
 
@@ -121,10 +125,9 @@ bot.dialog('/firstRun', [
         speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
             if (err) return console.log(err);
             console.log('Wrote out: ' + 'voiceRespond.wav');
-            play('./voiceRespond.wav').play();
-     
+            //player('./voiceRespond.wav').play();
             //var reply = new builder.Message().setText(session, str);
-            //reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'http://storebotwebapp.azurewebsites.net' } });
+            //reply.addAttachment({ contentType: 'audio/wav', contenUrl: { "audio": 'http://storebotwebapp.azurewebsites.net/media' } });
             //session.send(reply);
         });
     },
@@ -175,10 +178,9 @@ intents.matches('BeautyEnquiry', [
 
         //check which result has retun, if no retun, its not bull but length is typically 0
         if (faceProduct.length > 0) {
-            console.log(faceProduct);
-         
             //builder.Prompts.text(session, "is BeautyProduct::Face enquiry");  
-            if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "BB Cream")) {
+             if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "BB Cream")) {
+            //if (builder.EntityRecognizer.findBestMatch("BB Cream", faceProduct.entity)) {
                 var str = "We've Lorea BB Cream, would you like to try it?";
                 var reply = new builder.Message().setText(session, str);
                 speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
@@ -186,7 +188,7 @@ intents.matches('BeautyEnquiry', [
                     console.log('Wrote out: ' + 'voiceRespond.wav');
                 });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' }, { contentType: 'audio/wav', contentUrl: 'http://storebotwebapp.azurewebsites.net', name: 'voiceRespond.wav' });
-                
+
                 //reply.addAttachment({ contentType: 'audio/wav', contentUrl: 'http://storebotwebapp.azurewebsites.net'} );
                 /*
                 //Tryinh to use HeroCard?...
@@ -210,7 +212,7 @@ intents.matches('BeautyEnquiry', [
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryBBCream");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryBBCream", 0.5);
-            } else if (builder.EntityRecognizer.findAllEntities(faceProduct.entities, "2 way cake")) {
+            } else if (builder.EntityRecognizer.findAllEntities(args.entities, "2 way cake")) {
                 var str = "We've Lorea true match two way powder, would you like to try it?";
                 var reply = new builder.Message().setText(session, str);
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
@@ -243,7 +245,9 @@ intents.matches('BeautyEnquiry', [
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryEyes", 0.5); //change 0.5 to avg sentinment
             }
             session.send(reply);
-        };
+        } else {
+            builder.Prompts.text(session, "I've other Beauty Face products, you may try BB Cream or Lipstick ");
+        }
     }
 ]);
 
@@ -277,6 +281,8 @@ intents.matches('BabyEnquiry', [
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryDiapers");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryDiapers", 0.5); //change 0.5 to avg sentinment
+            } else {
+                builder.Prompts.text(session, "I've other Baby products, you may try diaper or milk");
             }
             session.send(reply);
         };
@@ -374,6 +380,8 @@ intents.matches('CustomerRespond', [
             //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://blog.ccbcmd.edu/vwright/files/2013/12/DespicableMe-Minions-Hoorah-600x222.jpg' });
             reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'https://gladysenglishclass.files.wordpress.com/2014/03/011813-despicableme-minions-hoorah-600x222.jpg?w=714' });
 
+        } else {
+            builder.Prompts.text(session, "I'm sorry that I don't understand your respond");
         }
         session.send(reply);
     }
