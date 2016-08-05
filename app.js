@@ -465,7 +465,7 @@ intents.matches('CustomerRespond', [
 
         } else {
             var str = "I'm sorry that I don't understand your respond:(";
-            var ctrChinese = "我很抱歉，我不知道你講痒:("
+            var strChinese = "我很抱歉，我不知道你講什麼:("
             //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
             speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                 if (err) return console.log(err);
