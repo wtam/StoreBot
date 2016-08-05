@@ -367,6 +367,15 @@ intents.matches('ChineseMedicineEnquiry', [
         var chineseMedicineService = builder.EntityRecognizer.findAllEntities(args.entities, 'ChineseMedicineService');
         console.log(chineseMedicineService);
 
+        //var str = session.userData.name + ",....you can visit one of our medicine service";
+        var strChinese = session.userData.name + ", .....您可以來看看我地的中醫醫療服務";
+        //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
+        speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+            if (err) return console.log(err);
+            //console.log('Wrote out: ' + 'voiceRespond.wav');
+            player('voiceRespond.wav');
+        });
+
         //appInsight  custom event
         appInsightClient.trackEvent("ChineseMedicinetEnquiry");
         send_to_StorebotEventHub.sendrequests(session.userData.name, "ChineseMedicinetEnquiry", 0.5); //change 0.5 to avg sentinment
