@@ -62,8 +62,8 @@ exports.textToSpeech = function textToSpeech(text, filename, callback) {
         request.post({
             url: 'https://speech.platform.bing.com/synthesize',
             //https://www.microsoft.com/cognitive-services/en-us/speech-api/documentation/api-reference-rest/bingvoiceoutput
-            body: util.format(ssmlTemplate, 'en-US', 'Female', 'Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)', text),
-            //body: util.format(ssmlTemplate, 'zh-HK', 'Female', 'Microsoft Server Speech Text to Speech Voice (zh-HK, Tracy, Apollo)', text),
+            //body: util.format(ssmlTemplate, 'en-US', 'Female', 'Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)', text),
+            body: util.format(ssmlTemplate, 'zh-HK', 'Female', 'Microsoft Server Speech Text to Speech Voice (zh-HK, Tracy, Apollo)', text),
             encoding: null,
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
