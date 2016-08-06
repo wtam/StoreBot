@@ -477,7 +477,7 @@ intents.matches('CustomerRespond', [
             var reply = new builder.Message().setText(session, str);
             //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://blog.ccbcmd.edu/vwright/files/2013/12/DespicableMe-Minions-Hoorah-600x222.jpg' });
             reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'https://gladysenglishclass.files.wordpress.com/2014/03/011813-despicableme-minions-hoorah-600x222.jpg?w=714' });
-            //session.send(reply);
+            session.send(reply);
             //player('./media/happy.wav');
         } else {
             var str = "I'm sorry that I don't understand your respond:(";
