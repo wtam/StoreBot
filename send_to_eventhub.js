@@ -68,7 +68,7 @@ process.on('exit', function () {
 /*
 ** Send a batch of requests to the Event Hub
 */
-exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceScore) {
+exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceConversation, ServiceScore) {
     // for (var i = 0; i < nb; i++) {
 
     // Pick a random device and its corresponding SAS key
@@ -89,6 +89,7 @@ exports.sendrequests = function sendRequests(username, ServiceIntent, ServiceSco
     //console.log(localISOTime);
     payload.username = username;
     payload.serviceIntent = ServiceIntent;
+    payload.userConversation = ServiceConversation;
     payload.serviceScore = ServiceScore;
     console.log(payload);
     //var b = BSON.serialize(payload);

@@ -99,6 +99,7 @@ bot.use({
     botbuilder: function (session, next) {
         if (!session.userData.firstRun) {
             session.userData.firstRun = true;
+            session.userData.isLogging = true;  //logging user conversation to session.message.text
             session.beginDialog('/firstRun');
         } else {
             next();
@@ -203,9 +204,10 @@ intents.matches('BeautyEnquiry', [
                 }));*/
                 session.send(reply);
                 //player('./media/bbCream.wav');
+                //console.log(session.message.text);
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryBBCream");
-                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryBBCream", 0.5);             
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryBBCream", session.message.text, 0.5);             
              } else if (builder.EntityRecognizer.findAllEntities(args.entities, "2 way cake")) {
                  //This code never execute as the entity never match!
                  var str = "We've Lorea true match two way powder, would you like to try it?";
@@ -222,7 +224,7 @@ intents.matches('BeautyEnquiry', [
                 session.send(reply);
                  //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiry2WayCake");
-                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiry2WayCake", 0.5); //change 0.5 to avg sentinment
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiry2WayCake", session.message.text, 0.5); //change 0.5 to avg sentinment
             }
             //session.send(reply);
         } else if (lipsProduct.length > 0) {
@@ -240,11 +242,11 @@ intents.matches('BeautyEnquiry', [
                 var reply = new builder.Message().setText(session, str);
                 //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/lipstick.jpg' });
-                //session.send(reply);
+                session.send(reply);
                 //player('./media/lipstick.wav');
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryLips");
-                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiry2WayCake", 0.5); //change 0.5 to avg sentinment
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryLips", session.message.text, 0.5); //change 0.5 to avg sentinment
             }
             //session.send(reply);
         } else if (eyesProduct.length > 0) {
@@ -266,7 +268,7 @@ intents.matches('BeautyEnquiry', [
                 //player('./media/eyeShadow.wav');
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryEyes");
-                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryEyes", 0.5); //change 0.5 to avg sentinment
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryEyes", session.message.text, 0.5); //change 0.5 to avg sentinment
             }
             //session.send(reply);
         } else {
@@ -311,7 +313,7 @@ intents.matches('BabyEnquiry', [
                 //player('./media/milkPowder.wav');
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryMilkPowder");
-                send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryMilkPowder", 0.5); //change 0.5 to avg sentinment
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryMilkPowder", session.message.text, 0.5); //change 0.5 to avg sentinment
             }
             //session.send(reply);
         } else if (diaperProduct.length > 0) {
@@ -332,7 +334,7 @@ intents.matches('BabyEnquiry', [
                 //player('./media/diaper.wav');
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryDiapers");
-                send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryDiapers", 0.5); //change 0.5 to avg sentinment
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryDiapers", session.message.text, 0.5); //change 0.5 to avg sentinment
             }
         } else {
                 var str = "I've other Baby products, you may try diaper or milk";
@@ -367,7 +369,7 @@ intents.matches('ChineseMedicineEnquiry', [
 
         //appInsight  custom event
         appInsightClient.trackEvent("ChineseMedicinetEnquiry");
-        send_to_StorebotEventHub.sendrequests(session.userData.name, "ChineseMedicinetEnquiry", 0.5); //change 0.5 to avg sentinment
+        send_to_StorebotEventHub.sendrequests(session.userData.name, "ChineseMedicinetEnquiry", session.message.text, 0.5); //change 0.5 to avg sentinment
 
         //find the closest store that has ChineseMedicineservice
         wifiScanner.scan(function (err, towers) {
@@ -434,7 +436,7 @@ intents.matches('CustomerRespond', [
             console.log(args);
             //appInsight  custom event
             appInsightClient.trackEvent("CustomerDisatisfaction");
-            send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerDisatisfaction", 0.1); //change 0.1 to avg sentinment
+            send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerDisatisfaction", session.message.text,  0.1); //change 0.1 to avg sentinment
             var str = ":(";
             //speech.textToSpeech("I am so sad", 'voiceRespond.wav', function (err) {
             speech.textToSpeech("我好唔開心", 'voiceRespond.wav', function (err) {
@@ -451,7 +453,7 @@ intents.matches('CustomerRespond', [
             console.log(args);
             //appInsight  custom event
             appInsightClient.trackEvent("CustomerSatisfaction");
-            send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerSatisfaction", 0.9); //change 0.9 to avg sentinmentsend_to_StorebotEventHub(1, "CustomerSatisfaction", 0.9); //change 0.9 to avg sentinment
+            send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerSatisfaction", session.message.text, 0.9); //change 0.9 to avg sentinmentsend_to_StorebotEventHub(1, "CustomerSatisfaction", 0.9); //change 0.9 to avg sentinment
             var str = ":)";
             //speech.textToSpeech("That's great", 'voiceRespond.wav', function (err) {
             speech.textToSpeech("我好開心", 'voiceRespond.wav', function (err) {
@@ -496,7 +498,7 @@ intents.matches('Help', [
         var reply = new builder.Message().setText(session, str);
         //appInsight  custom event
          appInsightClient.trackEvent("Help");
-         send_to_StorebotEventHub.sendrequests(session.userData.name, "Help", 0.5); //change 0.5 to avg sentinment   
+         send_to_StorebotEventHub.sendrequests(session.userData.name, "Help", session.message.text, 0.5); //change 0.5 to avg sentinment   
         session.send(reply);       
     }
 ]);
