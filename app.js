@@ -26,17 +26,12 @@ process.env.APPINSIGHTS_INSTRUMENTATIONKEY = "e3f5eb91-50e1-4517-a46a-32ee83d08e
 appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 var appInsightClient = appInsights.getClient();
 
-// require speech.js
+// require speech.js for Text to speech
 var speech = require('./speech.js');
-// require play.js to play audio on native client which is botframework emulator for this case
-// source from https://github.com/Marak/play.js/
-//var player = require('play-sound')(opts = { player: "wmplayer.exe"});
-//player.play("http://localhost:3978/media/voiceRespond.wav", function (err) {console.log(err) });
 
 //Send telemetry to Evenhub
 var send_to_StorebotEventHub = require('./send_to_eventhub.js');
 
-// Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
@@ -58,30 +53,14 @@ var connector = new builder.ChatConnector({
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
-//Serve a static web page
-//server.get(/.*/, restify.serveStatic({
-//    'directory': '.',
-//    'default': 'index.html',
-//}));
 
-//serve a static file server for respond
-fs = require('fs');
-server.get('/media/:name', respond);
-//server.head('/media/:name', respond);
-function respond(req, res, next) {
-    //res.send('hello ' + req.params.name);
-    console.log(req.params.name);
-    var media = fs.readFileSync(req.params.name);
-    //if (file == '/sad.jpg') {
-       // console.log(media);
-       // res.writeHead(200, { 'Content-Type': 'image/jpg' });
-        //res.end(media);
-   // }
-    res.write(media, 'binary');
-    //res.write(media);
-    res.end();
-    next();
-}
+//Serve files download
+server.get(/.*/, restify.serveStatic({
+    'directory': 'media',
+    'index': false,
+    //'default': 'sad.jpg',
+}));
+
 
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
@@ -161,7 +140,6 @@ bot.dialog('/firstRun', [
             //console.log('Wrote out: ' + 'voiceRespond.wav');
             player('voiceRespond.wav');
         });
-        //player('voiceRespond.wav');
         session.send(str);
         session.replaceDialog('/');
     }
@@ -201,10 +179,9 @@ intents.matches('BeautyEnquiry', [
                     //console.log('Wrote out: ' + 'voiceRespond.wav');
                     player('voiceRespond.wav');
                 });
-                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' });
-                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'file://../media/bbCream.jpg"' });
-
-                //reply.addAttachment({ contentType: 'audio/wav', contentUrl: 'http://storebotwebapp.azurewebsites.net'} );
+                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/bbCream.jpg' });   
+               //reply.addAttachment({ contentType: 'audio/wav', contentUrl: 'http://storebotwebapp.azurewebsites.net/bbCream.wav'} );
                 /*
                 //Tryinh to use HeroCard?...
                 
@@ -229,7 +206,8 @@ intents.matches('BeautyEnquiry', [
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryBBCream");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryBBCream", 0.5);             
-            } else if (builder.EntityRecognizer.findAllEntities(args.entities, "2 way cake")) {
+             } else if (builder.EntityRecognizer.findAllEntities(args.entities, "2 way cake")) {
+                 //This code never execute as the entity never match!
                  var str = "We've Lorea true match two way powder, would you like to try it?";
                  //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
                  speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
@@ -239,7 +217,8 @@ intents.matches('BeautyEnquiry', [
                  });
                  //player('voiceRespond.wav');
                 var reply = new builder.Message().setText(session, str);
-                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
+                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/2wayCake.jpg' });
                 session.send(reply);
                  //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiry2WayCake");
@@ -259,8 +238,9 @@ intents.matches('BeautyEnquiry', [
                     player('voiceRespond.wav');
                 });
                 var reply = new builder.Message().setText(session, str);
-                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
-                session.send(reply);
+                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/lipstick.jpg' });
+                //session.send(reply);
                 //player('./media/lipstick.wav');
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryLips");
@@ -280,7 +260,8 @@ intents.matches('BeautyEnquiry', [
                     player('voiceRespond.wav');
                 });
                 var reply = new builder.Message().setText(session, str);
-                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808664858654.jpg' });
+                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808664858654.jpg' });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/eyeShadow.jpg' });
                 session.send(reply);
                 //player('./media/eyeShadow.wav');
                 //appInsight  custom event
@@ -324,7 +305,8 @@ intents.matches('BabyEnquiry', [
                     player('voiceRespond.wav');
                 });
                 var reply = new builder.Message().setText(session, str);
-                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
+                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/milkPowder.jpg' });
                 session.send(reply);
                 //player('./media/milkPowder.wav');
                 //appInsight  custom event
@@ -344,7 +326,8 @@ intents.matches('BabyEnquiry', [
                     player('voiceRespond.wav');
                 });
                 var reply = new builder.Message().setText(session, str);
-                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
+                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/diaper.jpg' });
                 session.send(reply);
                 //player('./media/diaper.wav');
                 //appInsight  custom event
@@ -433,7 +416,8 @@ intents.matches('ChineseMedicineEnquiry', [
                         var reply = new builder.Message().setText(session, "%s, you can visit our store at Shop No. 28B, Level 2, Fanling Town Centre for Chinese Medicine", session.userData.name);
                         break;
                 };
-                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/h68/h1e/8835002794014.jpg' });
+                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/h68/h1e/8835002794014.jpg' });
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/chineseMEdicine.jpg' });
                 session.send(reply);
             }) //geoloc
         })//wifi scanner
@@ -459,7 +443,8 @@ intents.matches('CustomerRespond', [
                 player('voiceRespond.wav');
             });
             var reply = new builder.Message().setText(session, str);
-            reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://data2.whicdn.com/images/69773875/large.jpg' });
+            //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://data2.whicdn.com/images/69773875/large.jpg' });
+            reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/sad.jpg' });
             session.send(reply);
             //player('./media/unhappy.wav');
         } else if (builder.EntityRecognizer.findEntity(args.entities, 'Like')) {
@@ -476,7 +461,8 @@ intents.matches('CustomerRespond', [
             });
             var reply = new builder.Message().setText(session, str);
             //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://blog.ccbcmd.edu/vwright/files/2013/12/DespicableMe-Minions-Hoorah-600x222.jpg' });
-            reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'https://gladysenglishclass.files.wordpress.com/2014/03/011813-despicableme-minions-hoorah-600x222.jpg?w=714' });
+            //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'https://gladysenglishclass.files.wordpress.com/2014/03/011813-despicableme-minions-hoorah-600x222.jpg?w=714' });
+            reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/happy.png' });
             session.send(reply);
             //player('./media/happy.wav');
         } else {
@@ -524,7 +510,7 @@ intents.onDefault([
             player('voiceRespond.wav');
         });
         //builder.DialogAction.send("You can say something like: Do you have any milk powder for Baby?");
-        var str = "You can say something like: Do you have any milk powder for Baby?"
+        var str = "You can ask something like Beauty or Baby product etc.";
         builder.Prompts.text(session, str);
     }
 ]);

@@ -37,6 +37,24 @@
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\typings\node\node.d.ts" />
     <Content Include="index.html" />
+    <Content Include="media\2wayCake.jpg" />
+    <Content Include="media\bbCream.jpg" />
+    <Content Include="media\bbCream.wav" />
+    <Content Include="media\chineseMEdicine.jpg" />
+    <Content Include="media\diaper.jpg" />
+    <Content Include="media\diaper.wav" />
+    <Content Include="media\eyeShadow.jpg" />
+    <Content Include="media\eyeShadow.wav" />
+    <Content Include="media\greeting.wav" />
+    <Content Include="media\happy.png" />
+    <Content Include="media\happy.wav" />
+    <Content Include="media\lipStick.jpg" />
+    <Content Include="media\lipstick.wav" />
+    <Content Include="media\milkPowder.jpg" />
+    <Content Include="media\milkPowder.wav" />
+    <Content Include="media\otherBeautyProduct.wav" />
+    <Content Include="media\sad.jpg" />
+    <Content Include="media\unhappy.wav" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <None Include="StoreBotWebApp.pubxml" />
@@ -49,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
+    <Folder Include="media\" />
     <Folder Include="Scripts\" />
     <Folder Include="Scripts\typings\" />
     <Folder Include="Scripts\typings\node\" />
