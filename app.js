@@ -107,19 +107,35 @@ bot.use({
     }
 });
 
+var Fiber = require('fibers');
+function sleep(milliseconds) {
+    var fiber = Fiber.current;
+    setTimeout(function () {
+        //console.log(log_sequence_counter++ + task + ' callback');
+        fiber.run();
+    }, milliseconds);
+    //console.log(log_sequence_counter++ + task + ' thread/fiber suspended');
+    Fiber.yield();
+    //console.log(log_sequence_counter++ + task + ' thread/fiber resumed');
+}
+
+
 bot.dialog('/firstRun', [
     function (session) {
         var str = "Hello, I'm a E-Store Bot.....What's your name?";
         var strChinese = "你好啊，我係一個 E Store Bot.....我應該點稱呼你？"
-        builder.Prompts.text(session, str);
-        //console.log('Converting from text -> speech');
-        //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-        speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
-            if (err) return console.log(err);
-            console.log('Wrote out: ' + 'voiceRespond.wav');
-            player('voiceRespond.wav');
-        }) 
-        //player('./media/greeting.wav');
+            //console.log('Converting from text -> speech');
+            //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
+            /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+                if (err) return console.log(err);
+                console.log('Wrote out: ' + 'voiceRespond.wav');
+                player('voiceRespond.wav');
+            }) */
+        var task1 = function () {builder.Prompts.text(session, str)};
+        var task2 = function () { sleep(1000); player('./media/greeting.wav');};
+        Fiber(task1).run();
+        Fiber(task2).run();
+        
     },
     function (session, results) {
 
@@ -175,13 +191,12 @@ intents.matches('BeautyEnquiry', [
                  var strChinese = "我地有...Lorea  BB Cream，你想唔想試下呀!";
                 var reply = new builder.Message().setText(session, str);
                 //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-                speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+                /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                     if (err) return console.log(err);
                     //console.log('Wrote out: ' + 'voiceRespond.wav');
                     player('voiceRespond.wav');
-                });
-                //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg' });
-                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/bbCream.jpg' });   
+                });*/
+                reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/bbCream.jpg' } );   
                //reply.addAttachment({ contentType: 'audio/wav', contentUrl: 'http://storebotwebapp.azurewebsites.net/bbCream.wav'} );
                 /*
                 //Tryinh to use HeroCard?...
@@ -191,7 +206,7 @@ intents.matches('BeautyEnquiry', [
                     Title: 'You may like this BeautyProduct Face enquiry',
                     subtitle: 'Loreal BB Cream, HK$140',
                     images: [
-                        { url: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808647360542.jpg', }
+                        { url: 'http://storebotwebapp.azurewebsites.net/bbCream.jpg', }
                     ],
                     contentType: 'application/vnd.microsoft.card.hero',
                     buttons: [
@@ -202,8 +217,12 @@ intents.matches('BeautyEnquiry', [
                         }
                     ],
                 }));*/
-                session.send(reply);
+                //session.send(reply);
                 //player('./media/bbCream.wav');
+                var task1 = function () { session.send(reply) };
+                var task2 = function () { sleep(1000); player('./media/bbCream.wav'); };
+                Fiber(task1).run();
+                Fiber(task2).run();
                 //console.log(session.message.text);
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryBBCream");
@@ -216,8 +235,7 @@ intents.matches('BeautyEnquiry', [
                      if (err) return console.log(err);
                      //console.log('Wrote out: ' + 'voiceRespond.wav');
                      player('voiceRespond.wav');
-                 });
-                 //player('voiceRespond.wav');
+                 });          
                 var reply = new builder.Message().setText(session, str);
                 //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/2wayCake.jpg' });
@@ -234,16 +252,20 @@ intents.matches('BeautyEnquiry', [
                 var str = "We've Maybelline watershine pure lip, would you like to try it?";
                 var strChinese = "我地有 Maybelline watershine pure lip 唇膏，你想唔想試下呀!";
                 //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-                speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+                /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                     if (err) return console.log(err);
                     //console.log('Wrote out: ' + 'voiceRespond.wav');
                     player('voiceRespond.wav');
-                });
+                });*/
                 var reply = new builder.Message().setText(session, str);
                 //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8799512231966.jpg' });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/lipstick.jpg' });
-                session.send(reply);
+                //session.send(reply);
                 //player('./media/lipstick.wav');
+                var task1 = function () { session.send(reply) };
+                var task2 = function () { sleep(1000); player('./media/lipstick.wav'); };
+                Fiber(task1).run();
+                Fiber(task2).run();
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryLips");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryLips", session.message.text, 0.5); //change 0.5 to avg sentinment
@@ -256,16 +278,20 @@ intents.matches('BeautyEnquiry', [
                 var str = "We've Maybelline Big Eye shadow pink, would you like to try it?";
                 var strChinese = "我地有......Maybelline Big Eye shadow pink，你想唔想試下呀!";
                 //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-                speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+                /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                     if (err) return console.log(err);
                     //console.log('Wrote out: ' + 'voiceRespond.wav');
                     player('voiceRespond.wav');
-                });
+                });*/
                 var reply = new builder.Message().setText(session, str);
                 //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8808664858654.jpg' });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/eyeShadow.jpg' });
-                session.send(reply);
+                //session.send(reply);
                 //player('./media/eyeShadow.wav');
+                var task1 = function () { session.send(reply) };
+                var task2 = function () { sleep(1000); player('./media/eyeShadow.wav'); };
+                Fiber(task1).run();
+                Fiber(task2).run();
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryEyes");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryEyes", session.message.text, 0.5); //change 0.5 to avg sentinment
@@ -275,13 +301,17 @@ intents.matches('BeautyEnquiry', [
             var str = "I've other Beauty Face products, you may try BB Cream or Lipstick ";
             var strChinese = "我地有其他 美容產品，你可以嘗試 BB 霜 或 唇膏";
             //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-            speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+            /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                 if (err) return console.log(err);
                 //console.log('Wrote out: ' + 'voiceRespond.wav');
                 player('voiceRespond.wav');
-            });
-            builder.Prompts.text(session, str);
+            });*/
+            //builder.Prompts.text(session, str);
             //player('./media/otherBeautyProduct.wav');
+            var task1 = function () { builder.Prompts.text(session, str);};
+            var task2 = function () { sleep(1000); player('./media/otherBeautyProduct.wav'); };
+            Fiber(task1).run();
+            Fiber(task2).run();
         }
     }
 ]);
@@ -301,16 +331,20 @@ intents.matches('BabyEnquiry', [
                 var str = "How about Friso Gold Baby Milk?";
                 var strChinese = "我地有.....Friso Gold 嬰兒奶粉, 你想唔想試下呀!";
                 //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-                speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+                /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                     if (err) return console.log(err);
                     //console.log('Wrote out: ' + 'voiceRespond.wav');
                     player('voiceRespond.wav');
-                });
+                });*/
                 var reply = new builder.Message().setText(session, str);
                 //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8802574958622.jpg' });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/milkPowder.jpg' });
-                session.send(reply);
+                //session.send(reply);
                 //player('./media/milkPowder.wav');
+                var task1 = function () { session.send(reply);};
+                var task2 = function () { sleep(1000); player('./media/milkPowder.wav'); };
+                Fiber(task1).run();
+                Fiber(task2).run();
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryMilkPowder");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryMilkPowder", session.message.text, 0.5); //change 0.5 to avg sentinment
@@ -325,13 +359,17 @@ intents.matches('BabyEnquiry', [
                 speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                     if (err) return console.log(err);
                     //console.log('Wrote out: ' + 'voiceRespond.wav');
-                    player('voiceRespond.wav');
+                    //player('voiceRespond.wav');
                 });
                 var reply = new builder.Message().setText(session, str);
                 //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8815012249630.jpg' });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/diaper.jpg' });
-                session.send(reply);
+                //session.send(reply);
                 //player('./media/diaper.wav');
+                var task1 = function () { session.send(reply); };
+                var task2 = function () { sleep(1000); player('./media/diaper.wav');};
+                Fiber(task1).run();
+                Fiber(task2).run();
                 //appInsight  custom event
                 appInsightClient.trackEvent("BabyProductEnquiryDiapers");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BabyProductEnquiryDiapers", session.message.text, 0.5); //change 0.5 to avg sentinment
@@ -340,12 +378,17 @@ intents.matches('BabyEnquiry', [
                 var str = "I've other Baby products, you may try diaper or milk";
                 var strChinese = "我地有其他嬰兒用品，你可以嘗試尿布或奶粉";
                 //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-                speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+                /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                     if (err) return console.log(err);
                     //console.log('Wrote out: ' + 'voiceRespond.wav');
                     player('voiceRespond.wav');
-                });
-                builder.Prompts.text(session, str);
+                });*/
+                //builder.Prompts.text(session, str);
+                //player('./media/otherBabyProduct.wav');
+                var task1 = function () { builder.Prompts.text(session, str);};
+                var task2 = function () { sleep(1000); player('./media/otherBabyProduct.wav'); };
+                Fiber(task1).run();
+                Fiber(task2).run();
             }
     }
 ]);
@@ -439,16 +482,20 @@ intents.matches('CustomerRespond', [
             send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerDisatisfaction", session.message.text,  0.1); //change 0.1 to avg sentinment
             var str = ":(";
             //speech.textToSpeech("I am so sad", 'voiceRespond.wav', function (err) {
-            speech.textToSpeech("我好唔開心", 'voiceRespond.wav', function (err) {
+            /*speech.textToSpeech("我好唔開心", 'voiceRespond.wav', function (err) {
                 if (err) return console.log(err);
                 //console.log('Wrote out: ' + 'voiceRespond.wav');
                 player('voiceRespond.wav');
-            });
+            });*/
             var reply = new builder.Message().setText(session, str);
             //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://data2.whicdn.com/images/69773875/large.jpg' });
             reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/sad.jpg' });
-            session.send(reply);
+            //session.send(reply);
             //player('./media/unhappy.wav');
+            var task1 = function () { session.send(reply); };
+            var task2 = function () { sleep(1000); player('./media/unhappy.wav');};
+            Fiber(task1).run();
+            Fiber(task2).run();
         } else if (builder.EntityRecognizer.findEntity(args.entities, 'Like')) {
             console.log(args);
             //appInsight  custom event
@@ -456,28 +503,36 @@ intents.matches('CustomerRespond', [
             send_to_StorebotEventHub.sendrequests(session.userData.name, "CustomerSatisfaction", session.message.text, 0.9); //change 0.9 to avg sentinmentsend_to_StorebotEventHub(1, "CustomerSatisfaction", 0.9); //change 0.9 to avg sentinment
             var str = ":)";
             //speech.textToSpeech("That's great", 'voiceRespond.wav', function (err) {
-            speech.textToSpeech("我好開心", 'voiceRespond.wav', function (err) {
+            /*speech.textToSpeech("我好開心", 'voiceRespond.wav', function (err) {
                 if (err) return console.log(err);
                 //console.log('Wrote out: ' + 'voiceRespond.wav');
-                player('voiceRespond.wav');
-            });
+                //player('voiceRespond.wav');
+            });*/
             var reply = new builder.Message().setText(session, str);
             //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://blog.ccbcmd.edu/vwright/files/2013/12/DespicableMe-Minions-Hoorah-600x222.jpg' });
             //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'https://gladysenglishclass.files.wordpress.com/2014/03/011813-despicableme-minions-hoorah-600x222.jpg?w=714' });
             reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/happy.png' });
-            session.send(reply);
+            //session.send(reply);
             //player('./media/happy.wav');
+            var task1 = function () { session.send(reply); };
+            var task2 = function () { sleep(1000); player('./media/happy.wav'); };
+            Fiber(task1).run();
+            Fiber(task2).run();
         } else {
             var str = "I'm sorry that I don't understand your respond:(";
             var strChinese = "對唔住，我唔知道你講乜:("
             //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-            speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+            /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
                 if (err) return console.log(err);
                 //console.log('Wrote out: ' + 'voiceRespond.wav');
                 player('voiceRespond.wav');
-            });
-            //player('voiceRespond.wav');
-            builder.Prompts.text(session, str);
+            });*/
+            //builder.Prompts.text(session, str);
+            //player('./media/dontUnderstand.wav');
+            var task1 = function () { builder.Prompts.text(session, str); };
+            var task2 = function () { sleep(1000); player('./media/dontUnderstand.wav');};
+            Fiber(task1).run();
+            Fiber(task2).run();
         }
         //session.send(reply);
     }
@@ -489,10 +544,10 @@ intents.matches('Help', [
         //console.log(args);
         var str = session.userData.name + ", I can help you to find product from e- Store and medicine service.";
         var strChinese = session.userData.name + "我可意係 E Store 裡面幫你揾到 美容或嬰兒產品 同 醫療服務";
-        speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
+        speech.textToSpeech(strChinese, 'voiceRespond1.wav', function (err) {
             if (err) return console.log(err);
             //console.log('Wrote out: ' + 'voiceRespond.wav');
-            player('voiceRespond.wav');
+            player('voiceRespond1.wav');
         });
         //player('voiceRespond.wav');
         var reply = new builder.Message().setText(session, str);
@@ -505,14 +560,19 @@ intents.matches('Help', [
 
 intents.onDefault([
     function (session, args, next) {
-        var strChinese = session.userData.name + "你可以試試問一 D , 美容產品 或 嬰兒用品？";
-        speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+        var strChinese = "你可以試試問一 D , 美容產品 或 嬰兒用品？";
+        /*speech.textToSpeech(strChinese, 'voiceRespond2.wav', function (err) {
             if (err) return console.log(err);
             //console.log('Wrote out: ' + 'voiceRespond.wav');
-            player('voiceRespond.wav');
-        });
+            player('voiceRespond2.wav');
+        });*/
         //builder.DialogAction.send("You can say something like: Do you have any milk powder for Baby?");
         var str = "You can ask something like Beauty or Baby product etc.";
-        builder.Prompts.text(session, str);
+        //builder.Prompts.text(session, str);
+        //player('./media/onDefault.wav');
+        var task1 = function () { builder.Prompts.text(session, str); };
+        var task2 = function () { sleep(1000); player('./media/onDefault.wav');};
+        Fiber(task1).run();
+        Fiber(task2).run();
     }
 ]);
