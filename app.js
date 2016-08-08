@@ -308,9 +308,9 @@ intents.matches('BeautyEnquiry', [
                 //console.log('Wrote out: ' + 'voiceRespond.wav');
                 player('voiceRespond.wav');
             });*/
-            //builder.Prompts.text(session, str);
+            var reply = new builder.Message().setText(session, str);
             //player('./media/otherBeautyProduct.wav');
-            var task1 = function () { builder.Prompts.text(session, str);};
+            var task1 = function () { session.send(reply);};
             var task2 = function () { sleep(1000); player('./media/otherBeautyProduct.wav'); };
             Fiber(task1).run();
             Fiber(task2).run();
@@ -385,9 +385,9 @@ intents.matches('BabyEnquiry', [
                     //console.log('Wrote out: ' + 'voiceRespond.wav');
                     player('voiceRespond.wav');
                 });*/
-                //builder.Prompts.text(session, str);
+                var reply = new builder.Message().setText(session, str);
                 //player('./media/otherBabyProduct.wav');
-                var task1 = function () { builder.Prompts.text(session, str);};
+                var task1 = function () { session.send(reply);};
                 var task2 = function () { sleep(1000); player('./media/otherBabyProduct.wav'); };
                 Fiber(task1).run();
                 Fiber(task2).run();
@@ -529,9 +529,9 @@ intents.matches('CustomerRespond', [
                 //console.log('Wrote out: ' + 'voiceRespond.wav');
                 player('voiceRespond.wav');
             });*/
-            //builder.Prompts.text(session, str);
+            var reply = new builder.Message().setText(session, str);
             //player('./media/dontUnderstand.wav');
-            var task1 = function () { builder.Prompts.text(session, str); };
+            var task1 = function () { session.send(reply); };
             var task2 = function () { sleep(1000); player('./media/dontUnderstand.wav');};
             Fiber(task1).run();
             Fiber(task2).run();
@@ -570,9 +570,10 @@ intents.onDefault([
         });*/
         //builder.DialogAction.send("You can say something like: Do you have any milk powder for Baby?");
         var str = "You can ask something like Beauty or Baby product etc.";
-        //builder.Prompts.text(session, str);
+        //builder.Prompts.text(session, str);  //this affect the next intent detect as it expect input
+        var reply = new builder.Message().setText(session, str);
         //player('./media/onDefault.wav');
-        var task1 = function () { builder.Prompts.text(session, str); };
+        var task1 = function () { session.send(reply);};
         var task2 = function () { sleep(1000); player('./media/onDefault.wav');};
         Fiber(task1).run();
         Fiber(task2).run();
