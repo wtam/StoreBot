@@ -158,7 +158,9 @@ bot.dialog('/firstRun', [
             player('voiceRespond.wav');
         });
         session.send(str);
-        session.replaceDialog('/');
+        //session.replaceDialog('/');  //don't use this as it somehow not able to detect the 1st repalce intent????
+        session.endDialog();
+
     }
 ]); 
 
@@ -175,7 +177,7 @@ dialog.onBegin(function (session, args, next) {
 intents.matches('BeautyEnquiry', [
 
     function (session, args, next) {
-        //console.log(args);
+        console.log(args);
 
         // Resolve and store any entities passed from LUIS.
         var faceProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BeautyProduct::Face');
@@ -319,7 +321,7 @@ intents.matches('BeautyEnquiry', [
 intents.matches('BabyEnquiry', [
 
     function (session, args, next) {
-        //console.log(args);
+        console.log(args);
         // Resolve and store any entities passed from LUIS.
         var milkProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BabyProduct::MilkPowder');
         var diaperProduct = builder.EntityRecognizer.findAllEntities(args.entities, 'BabyProduct::Diapers');
@@ -396,7 +398,7 @@ intents.matches('BabyEnquiry', [
 intents.matches('ChineseMedicineEnquiry', [
 
     function (session, args, next) {
-        //console.log(args);
+        console.log(args);
         // Resolve and store any entities passed from LUIS.
         var chineseMedicineService = builder.EntityRecognizer.findAllEntities(args.entities, 'ChineseMedicineService');
         console.log(chineseMedicineService);
@@ -541,7 +543,7 @@ intents.matches('CustomerRespond', [
 intents.matches('Help', [
 
     function (session, args, next) {
-        //console.log(args);
+        console.log(args);
         var str = session.userData.name + ", I can help you to find product from e- Store and medicine service.";
         var strChinese = session.userData.name + "我可意係 E Store 裡面幫你揾到 美容或嬰兒產品 同 醫療服務";
         speech.textToSpeech(strChinese, 'voiceRespond1.wav', function (err) {
