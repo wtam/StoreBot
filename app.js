@@ -37,6 +37,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 // voice respond for native client, below comment is required, don't remove!!!!!!
+// https://github.com/tjanczuk/edge/issues/363 you need to install from him directly npm i tjanczuk/edge 
+// don't mess with the Bash otherewise, if confused the native call
 var edge = require('edge');
 var player = edge.func(function () {/*
     async (input) => {
@@ -61,7 +63,11 @@ server.get(/.*/, restify.serveStatic({
     //'default': 'sad.jpg',
 }));
 
-
+//handoff to Agent when cusomter say HELP!!
+const handoff_1 = require("./handoff");
+const commands_1 = require("./commands");
+const isAgent = (session) => session.message.user.name.startsWith("Agent");
+const handoff = new handoff_1.Handoff(bot, isAgent);
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
 //This is the StorBotLuis
