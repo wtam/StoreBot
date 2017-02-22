@@ -63,12 +63,6 @@ server.get(/.*/, restify.serveStatic({
     //'default': 'sad.jpg',
 }));
 
-//handoff to Agent when cusomter say HELP!!
-const handoff_1 = require("./handoff");
-const commands_1 = require("./commands");
-const isAgent = (session) => session.message.user.name.startsWith("Agent");
-const handoff = new handoff_1.Handoff(bot, isAgent);
-
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
 //This is the StorBotLuis
 //preview Luis model have issue of intents always return null
@@ -165,6 +159,13 @@ bot.dialog('/firstRun', [
         });
         session.send(str);
         //session.replaceDialog('/');  //don't use this as it somehow not able to detect the 1st repalce intent????
+
+        //handoff to Agent when cusomter say HELP!!
+        const handoff_1 = require("./handoff");
+        const commands_1 = require("./commands");
+        const isAgent = (session) => session.message.user.name.startsWith("Agent");
+        const handoff = new handoff_1.Handoff(bot, isAgent);
+
         session.endDialog();
 
     }
