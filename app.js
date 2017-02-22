@@ -102,6 +102,12 @@ bot.use({
             session.userData.isLogging = true;  //logging user conversation to session.message.text
             session.beginDialog('/firstRun');
         } else {
+            //handoff to Agent when cusomter say "speak to agent please"
+            const handoff_1 = require("./handoff");
+            const commands_1 = require("./commands");
+            const isAgent = (session) => session.message.user.name.startsWith("Agent");
+            const handoff = new handoff_1.Handoff(bot, isAgent);
+
             next();
         }
     }
@@ -159,13 +165,6 @@ bot.dialog('/firstRun', [
         });
         session.send(str);
         //session.replaceDialog('/');  //don't use this as it somehow not able to detect the 1st repalce intent????
-
-        //handoff to Agent when cusomter say HELP!!
-        const handoff_1 = require("./handoff");
-        const commands_1 = require("./commands");
-        const isAgent = (session) => session.message.user.name.startsWith("Agent");
-        const handoff = new handoff_1.Handoff(bot, isAgent);
-
         session.endDialog();
 
     }
