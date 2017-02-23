@@ -71,12 +71,14 @@ var model = 'https://api.projectoxford.ai/luis/v1/application?id=f567c7e9-c4ab-4
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
+/*
 //handoff to Agent when cusomter say "speak to agent please"
 const handoff_1 = require("./handoff");
 const commands_1 = require("./commands");
 const isAgent = (session) => session.message.user.name.startsWith("Agent");
 const handoff = new handoff_1.Handoff(bot, isAgent);
 bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
+*/
 
 bot.dialog('/', intents);
 
