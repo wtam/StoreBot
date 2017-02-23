@@ -536,6 +536,13 @@ intents.matches('CustomerRespond', [
             var task2 = function () { sleep(1000); player('./media/dontUnderstand.wav');};
             Fiber(task1).run();
             Fiber(task2).run();
+
+            //handoff to Agent when cusomter say "speak to agent please"
+            const handoff_1 = require("./handoff");
+            const commands_1 = require("./commands");
+            const isAgent = (session) => session.message.user.name.startsWith("Agent");
+            const handoff = new handoff_1.Handoff(bot, isAgent);
+            bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
         }
         //session.send(reply);
     }
@@ -578,12 +585,5 @@ intents.onDefault([
         var task2 = function () { sleep(1000); player('./media/onDefault.wav');};
         Fiber(task1).run();
         Fiber(task2).run();
-
-        //handoff to Agent when cusomter say "speak to agent please"
-        const handoff_1 = require("./handoff");
-        const commands_1 = require("./commands");
-        const isAgent = (session) => session.message.user.name.startsWith("Agent");
-        const handoff = new handoff_1.Handoff(bot, isAgent);
-        bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
     }
 ]);
