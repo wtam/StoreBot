@@ -76,6 +76,7 @@ const handoff_1 = require("./handoff");
 const commands_1 = require("./commands");
 const isAgent = (session) => session.message.user.name.startsWith("Agent");
 const handoff = new handoff_1.Handoff(bot, isAgent);
+bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
 
 bot.dialog('/', intents);
 
@@ -564,7 +565,6 @@ intents.matches('Help', [
          appInsightClient.trackEvent("Help");
          send_to_StorebotEventHub.sendrequests(session.userData.name, "Help", session.message.text, 0.5); //change 0.5 to avg sentinment   
          session.send(reply);       
-
     }
 ]);
 
