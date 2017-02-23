@@ -40,9 +40,11 @@ class Handoff {
     }
     routeMessage(session, next) {
         if (this.isAgent(session)) {
+            console.log('routeMessage: isAgent session');
             this.routeAgentMessage(session);
         }
         else {
+            console.log('routeMessage: isCustomer session');
             this.routeCustomerMessage(session, next);
         }
     }
