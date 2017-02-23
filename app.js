@@ -70,6 +70,13 @@ server.get(/.*/, restify.serveStatic({
 var model = 'https://api.projectoxford.ai/luis/v1/application?id=f567c7e9-c4ab-442d-8956-41cb1c8bcffc&subscription-key=7e282443df6b4699b0fdc189cde863d5&q=';
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
+
+//handoff to Agent when cusomter say "speak to agent please"
+const handoff_1 = require("./handoff");
+const commands_1 = require("./commands");
+const isAgent = (session) => session.message.user.name.startsWith("Agent");
+const handoff = new handoff_1.Handoff(bot, isAgent);
+
 bot.dialog('/', intents);
 
 //setup the store that has Chinese medicine for closest geolocation detection
@@ -557,12 +564,6 @@ intents.matches('Help', [
          appInsightClient.trackEvent("Help");
          send_to_StorebotEventHub.sendrequests(session.userData.name, "Help", session.message.text, 0.5); //change 0.5 to avg sentinment   
          session.send(reply);       
-
-         //handoff to Agent when cusomter say "speak to agent please"
-         const handoff_1 = require("./handoff");
-         const commands_1 = require("./commands");
-         const isAgent = (session) => session.message.user.name.startsWith("Agent");
-         const handoff = new handoff_1.Handoff(bot, isAgent);
 
     }
 ]);

@@ -69,7 +69,7 @@ function agentCommand(session, next, handoff) {
 }
 function customerCommand(session, next, handoff) {
     const message = session.message;
-    if (message.text === 'help') {
+    if (message.text === 'speak to agent') {
         // lookup the conversation (create it if one doesn't already exist)
         const conversation = handoff.getConversation({ customerConversationId: message.address.conversation.id }, message.address);
         if (conversation.state == handoff_1.ConversationState.Bot) {
