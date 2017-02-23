@@ -541,8 +541,11 @@ intents.matches('CustomerRespond', [
             const handoff_1 = require("./handoff");
             const commands_1 = require("./commands");
             const isAgent = (session) => session.message.user.name.startsWith("Agent");
+            console.log('handing off to ' + isAgent);
             const handoff = new handoff_1.Handoff(bot, isAgent);
+            console.log('After handoff before command');
             bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
+            console.log('after command');
         }
         //session.send(reply);
     }
