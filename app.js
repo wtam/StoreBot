@@ -153,9 +153,6 @@ bot.dialog('/firstRun', [
         // the conversation would end since the /firstRun dialog is the only 
         // dialog on the stack.
         session.userData.name = results.response
-        //set the session username as the user input name
-        session.message.user.name = results.response;
-        console.log("username input: ", session.message.user.name)
         var str = session.userData.name + ",....I can help you to find Beauty or Baby product from e-Store and medicine service";
         var strChinese = session.userData.name + ", .....我可意係 E Store 裡面幫你揾到 美容或嬰兒產品 同 醫療服務";
         //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
