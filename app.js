@@ -11,17 +11,17 @@ For a complete walkthrough of creating this bot see the article below.
 
 var builder = require('botbuilder');
 var restify = require('restify');
-var geo = require("geotrouvetou"); //find the nearest geolocation https://github.com/jbpin/geo-trouvetou 
+var geo = require('geotrouvetou'); //find the nearest geolocation https://github.com/jbpin/geo-trouvetou 
 //set up for GPS, current implementation assuming use in native client that impletment from Bot's Direct API
-var geoloc = require("geocode-wifi");
+var geoloc = require('geocode-wifi');
 // Not accurate.... need improvement using https://github.com/spark/node-wifiscanner/blob/master/examples/geolocation.js
 //var wifiScanner = require('node-wifiscanner'); //https://www.npmjs.com/package/geocode-wifi
 // Command: netsh wlan show networks mode=Bssid
 // *****Importance: the result still not show full wifi list unless clicking the laptop wifi icon to ensure yo usee the other wifi network
 var wifiScanner = require('node-wifi-scanner'); //https://github.com/ancasicolica/node-wifi-scanner
 //handoff to Agent when cusomter say "speak to agent please"
-const handoff_1 = require("./handoff");
-const commands_1 = require("./commands");
+const handoff_1 = require('./handoff.js');
+const commands_1 = require('./commands.js');
 
 //start ApplicationInsight
 var appInsights = require("applicationinsights"); 
