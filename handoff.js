@@ -1,6 +1,6 @@
 "use strict";
-const builder = require("botbuilder");
-const provider_1 = require("./provider");
+const builder = require('botbuilder');
+const provider_1 = require('./provider.js');
 // Options for state of a conversation
 // Customer talking to bot, waiting for next available agent or talking to an agent
 var ConversationState;
