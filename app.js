@@ -19,6 +19,9 @@ var geoloc = require("geocode-wifi");
 // Command: netsh wlan show networks mode=Bssid
 // *****Importance: the result still not show full wifi list unless clicking the laptop wifi icon to ensure yo usee the other wifi network
 var wifiScanner = require('node-wifi-scanner'); //https://github.com/ancasicolica/node-wifi-scanner
+//handoff to Agent when cusomter say "speak to agent please"
+const handoff_1 = require("./handoff");
+const commands_1 = require("./commands");
 
 //start ApplicationInsight
 var appInsights = require("applicationinsights"); 
@@ -150,6 +153,9 @@ bot.dialog('/firstRun', [
         // the conversation would end since the /firstRun dialog is the only 
         // dialog on the stack.
         session.userData.name = results.response
+        //set the session username as the user input name
+        session.message.user.name = results.response;
+        console.log("username input: ", session.message.user.name)
         var str = session.userData.name + ",....I can help you to find Beauty or Baby product from e-Store and medicine service";
         var strChinese = session.userData.name + ", .....我可意係 E Store 裡面幫你揾到 美容或嬰兒產品 同 醫療服務";
         //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
@@ -538,12 +544,9 @@ intents.matches('CustomerRespond', [
             Fiber(task2).run();
 
             //handoff to Agent when cusomter say "speak to agent please"
-            const handoff_1 = require("./handoff");
-            const commands_1 = require("./commands");
-            session.message.user.name = session.userData.name;
+            //use the BotChannel Emulator and set the use box to "Agent Smith" , then ignore the input name
             const isAgent = (session) => session.message.user.name.startsWith("Agent");
-            //const isAgent = (session) => session.userData.name.startsWith("Agent");
-            console.log(session.message.user.name);
+            ///const isAgent = (session) => session.userData.name.startsWith("Agent");
             console.log('handing off to Agent = ', isAgent);
             const handoff = new handoff_1.Handoff(bot, isAgent);
             console.log('After handoff before command');
