@@ -540,13 +540,10 @@ intents.matches('CustomerRespond', [
             //handoff to Agent when cusomter say "speak to agent please"
             const handoff_1 = require("./handoff");
             const commands_1 = require("./commands");
-            //const isAgent = (session) => session.message.user.name.startsWith("Agent");
-            const isAgent = (session) => session.userData.name.startsWith("Agent");
-            /*console.log(session.message.user.name);
-            if (session.message.user.name.startsWith("Agent")) 
-                var isAgent = true;
-            else
-                var isAgent = false*/
+            session.message.user.name = session.userData.name;
+            const isAgent = (session) => session.message.user.name.startsWith("Agent");
+            //const isAgent = (session) => session.userData.name.startsWith("Agent");
+            console.log(session.message.user.name);
             console.log('handing off to Agent = ', isAgent);
             const handoff = new handoff_1.Handoff(bot, isAgent);
             console.log('After handoff before command');
