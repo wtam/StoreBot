@@ -9,7 +9,7 @@ var ConversationState;
     ConversationState[ConversationState["Waiting"] = 1] = "Waiting";
     ConversationState[ConversationState["Agent"] = 2] = "Agent";
 })(ConversationState = exports.ConversationState || (exports.ConversationState = {}));
-;
+
 class Handoff {
     // if customizing, pass in your own check for isAgent and your own versions of methods in defaultProvider
     constructor(bot, isAgent, provider = provider_1.defaultProvider) {
