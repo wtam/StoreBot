@@ -542,8 +542,7 @@ intents.matches('CustomerRespond', [
 
             //handoff to Agent when cusomter say "speak to agent please"
             //use the BotChannel Emulator and set the use box to "Agent Smith" , then ignore the input name
-            ////////const isAgent = (session) => session.message.user.name.startsWith("Agent");
-            var isAgent = session.message.user.name.startsWith("Agent");
+            const isAgent = (session) => session.message.user.name.startsWith("Agent");
             //const isAgent = (session) => session.userData.name.startsWith("Agent");
             console.log('handing off to Agent = ' + isAgent);
             const handoff = new handoff_1.Handoff(bot, isAgent);
