@@ -544,7 +544,7 @@ intents.matches('CustomerRespond', [
             //use the BotChannel Emulator and set the use box to "Agent Smith" , then ignore the input name
             const isAgent = (session) => session.message.user.name.startsWith("Agent");
             ///const isAgent = (session) => session.userData.name.startsWith("Agent");
-            console.log('handing off to Agent = ', isAgent);
+            console.log('handing off to Agent = ' + isAgent);
             const handoff = new handoff_1.Handoff(bot, isAgent);
             console.log('After handoff before command');
             bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
