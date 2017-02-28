@@ -1,4 +1,4 @@
-"use strict";
+//"use strict";
 const builder = require('botbuilder');
 const provider_1 = require('./provider.js');
 // Options for state of a conversation
