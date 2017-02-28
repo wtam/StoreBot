@@ -91,4 +91,3 @@ class Handoff {
     }
 }
 exports.Handoff = Handoff;
-;
