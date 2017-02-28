@@ -1,6 +1,6 @@
-'use strict'
-const builder = require('botbuilder');
-const provider_1 = require('./provider.js');
+"use strict";
+const builder = require("botbuilder");
+const provider_1 = require("./provider");
 // Options for state of a conversation
 // Customer talking to bot, waiting for next available agent or talking to an agent
 var ConversationState;
@@ -9,7 +9,7 @@ var ConversationState;
     ConversationState[ConversationState["Waiting"] = 1] = "Waiting";
     ConversationState[ConversationState["Agent"] = 2] = "Agent";
 })(ConversationState = exports.ConversationState || (exports.ConversationState = {}));
-
+;
 class Handoff {
     // if customizing, pass in your own check for isAgent and your own versions of methods in defaultProvider
     constructor(bot, isAgent, provider = provider_1.defaultProvider) {
@@ -40,11 +40,9 @@ class Handoff {
     }
     routeMessage(session, next) {
         if (this.isAgent(session)) {
-            console.log('routeMessage: isAgent session');
             this.routeAgentMessage(session);
         }
         else {
-            console.log('routeMessage: isCustomer session');
             this.routeCustomerMessage(session, next);
         }
     }
@@ -91,3 +89,4 @@ class Handoff {
     }
 }
 exports.Handoff = Handoff;
+;

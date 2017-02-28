@@ -1,5 +1,5 @@
-'use strict'
-const handoff_1 = require('./handoff.js');
+"use strict";
+const handoff_1 = require("./handoff");
 function commandsMiddleware(handoff) {
     return {
         botbuilder: (session, next) => {
@@ -12,11 +12,9 @@ function commandsMiddleware(handoff) {
 exports.commandsMiddleware = commandsMiddleware;
 function command(session, next, handoff) {
     if (handoff.isAgent(session)) {
-        console.log('commandMiddleware: agentCommand');
         agentCommand(session, next, handoff);
     }
     else {
-        console.log('commandMiddleware: customerCommand');
         customerCommand(session, next, handoff);
     }
 }
@@ -28,12 +26,10 @@ function agentCommand(session, next, handoff) {
         return;
     // Commands to execute whether connected to a customer or not
     if (inputWords[0] === 'options') {
-        console.log('agentCommand: options');
         sendAgentCommandOptions(session);
         return;
     }
     else if (inputWords[0] === 'list') {
-        console.log('agentCommand: list');
         session.send(currentConversations(handoff));
         return;
     }
@@ -41,7 +37,6 @@ function agentCommand(session, next, handoff) {
     if (!conversation) {
         switch (inputWords[0]) {
             case 'connect':
-                console.log('agentCommand: connect');
                 const newConversation = handoff.connectCustomerToAgent(inputWords.length > 1
                     ? { customerName: inputWords.slice(1).join(' ') }
                     : { bestChoice: true }, message.address);
@@ -65,7 +60,6 @@ function agentCommand(session, next, handoff) {
         return;
     }
     if (message.text === 'disconnect') {
-        console.log('agentCommand: disconnect');
         if (handoff.connectCustomerToBot({ customerConversationId: conversation.customer.conversation.id })) {
             session.send("Customer " + conversation.customer.user.name + " is now connected to the bot.");
         }
@@ -75,8 +69,7 @@ function agentCommand(session, next, handoff) {
 }
 function customerCommand(session, next, handoff) {
     const message = session.message;
-    if (message.text === 'speak to agent') {
-        console.log('customerCommand: speak to agent');
+    if (message.text === 'help') {
         // lookup the conversation (create it if one doesn't already exist)
         const conversation = handoff.getConversation({ customerConversationId: message.address.conversation.id }, message.address);
         if (conversation.state == handoff_1.ConversationState.Bot) {

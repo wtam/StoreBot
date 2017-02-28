@@ -1,5 +1,5 @@
-'use strict'
-const handoff_1 = require('./handoff.js');
+"use strict";
+const handoff_1 = require("./handoff");
 exports.init = () => {
     exports.conversations = [];
 };
