@@ -1,6 +1,6 @@
-"use strict";
-const builder = require("botbuilder");
-const provider_1 = require("./provider");
+//"use strict";
+var builder = require("botbuilder");
+var provider_1 = require("./provider");
 // Options for state of a conversation
 // Customer talking to bot, waiting for next available agent or talking to an agent
 var ConversationState;
@@ -12,7 +12,7 @@ var ConversationState;
 ;
 class Handoff {
     // if customizing, pass in your own check for isAgent and your own versions of methods in defaultProvider
-    constructor(bot, isAgent, provider = provider_1.defaultProvider) {
+    varructor(bot, isAgent, provider = provider_1.defaultProvider) {
         this.bot = bot;
         this.isAgent = isAgent;
         this.provider = provider;
@@ -47,8 +47,8 @@ class Handoff {
         }
     }
     routeAgentMessage(session) {
-        const message = session.message;
-        const conversation = this.getConversation({ agentConversationId: message.address.conversation.id });
+        var message = session.message;
+        var conversation = this.getConversation({ agentConversationId: message.address.conversation.id });
         // if the agent is not in conversation, no further routing is necessary
         if (!conversation)
             return;
@@ -62,9 +62,9 @@ class Handoff {
         this.bot.send(new builder.Message().address(conversation.customer).text(message.text));
     }
     routeCustomerMessage(session, next) {
-        const message = session.message;
+        var message = session.message;
         // method will either return existing conversation or a newly created conversation if this is first time we've heard from customer
-        const conversation = this.getConversation({ customerConversationId: message.address.conversation.id }, message.address);
+        var conversation = this.getConversation({ customerConversationId: message.address.conversation.id }, message.address);
         this.addToTranscript({ customerConversationId: conversation.customer.conversation.id }, message.text);
         switch (conversation.state) {
             case ConversationState.Bot:
