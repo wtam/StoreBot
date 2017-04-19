@@ -20,8 +20,8 @@ var geoloc = require('geocode-wifi');
 // *****Importance: the result still not show full wifi list unless clicking the laptop wifi icon to ensure yo usee the other wifi network
 var wifiScanner = require('node-wifi-scanner'); //https://github.com/ancasicolica/node-wifi-scanner
 //handoff to Agent when cusomter say "speak to agent please"
-const handoff_1 = require("./handoff.js");
-const commands_1 = require("./commands.js");
+var handoff_1 = require('./handoff.js');
+var commands_1 = require('./commands.js');
 
 //start ApplicationInsight
 var appInsights = require("applicationinsights"); 
