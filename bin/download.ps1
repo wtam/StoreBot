@@ -51,7 +51,7 @@ else {
 	$url = $runtimeUrl
 }
 
-foreach($singleUrl in $url -split ";") 
+foreach($singleUrl in $url -split "") 
 {
     $suffix = Get-Random
     $downloaddir = $current + "\sandbox" + $suffix

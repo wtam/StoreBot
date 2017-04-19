@@ -1,37 +1,37 @@
-"use strict";
-const handoff_1 = require("./handoff");
+"use strict"
+const handoff_1 = require("./handoff")
 function commandsMiddleware(handoff) {
     return {
         botbuilder: (session, next) => {
             if (session.message.type === 'message') {
-                command(session, next, handoff);
+                command(session, next, handoff)
             }
         }
-    };
+    }
 }
-exports.commandsMiddleware = commandsMiddleware;
+exports.commandsMiddleware = commandsMiddleware
 function command(session, next, handoff) {
     if (handoff.isAgent(session)) {
-        agentCommand(session, next, handoff);
+        agentCommand(session, next, handoff)
     }
     else {
-        customerCommand(session, next, handoff);
+        customerCommand(session, next, handoff)
     }
 }
 function agentCommand(session, next, handoff) {
-    const message = session.message;
-    const conversation = handoff.getConversation({ agentConversationId: message.address.conversation.id });
-    const inputWords = message.text.split(' ');
+    const message = session.message
+    const conversation = handoff.getConversation({ agentConversationId: message.address.conversation.id })
+    const inputWords = message.text.split(' ')
     if (inputWords.length == 0)
-        return;
+        return
     // Commands to execute whether connected to a customer or not
     if (inputWords[0] === 'options') {
-        sendAgentCommandOptions(session);
-        return;
+        sendAgentCommandOptions(session)
+        return
     }
     else if (inputWords[0] === 'list') {
-        session.send(currentConversations(handoff));
-        return;
+        session.send(currentConversations(handoff))
+        return
     }
     // Commands to execute when not connected to a customer
     if (!conversation) {
@@ -39,72 +39,72 @@ function agentCommand(session, next, handoff) {
             case 'connect':
                 const newConversation = handoff.connectCustomerToAgent(inputWords.length > 1
                     ? { customerName: inputWords.slice(1).join(' ') }
-                    : { bestChoice: true }, message.address);
+                    : { bestChoice: true }, message.address)
                 if (newConversation) {
-                    session.send("You are connected to " + newConversation.customer.user.name);
+                    session.send("You are connected to " + newConversation.customer.user.name)
                 }
                 else {
-                    session.send("No customers waiting.");
+                    session.send("No customers waiting.")
                 }
-                break;
+                break
             default:
-                sendAgentCommandOptions(session);
-                break;
+                sendAgentCommandOptions(session)
+                break
         }
-        return;
+        return
     }
     if (conversation.state !== handoff_1.ConversationState.Agent) {
         // error state -- should not happen
-        session.send("Shouldn't be in this state - agent should have been cleared out.");
-        console.log("Shouldn't be in this state - agent should have been cleared out");
-        return;
+        session.send("Shouldn't be in this state - agent should have been cleared out.")
+        console.log("Shouldn't be in this state - agent should have been cleared out")
+        return
     }
     if (message.text === 'disconnect') {
         if (handoff.connectCustomerToBot({ customerConversationId: conversation.customer.conversation.id })) {
-            session.send("Customer " + conversation.customer.user.name + " is now connected to the bot.");
+            session.send("Customer " + conversation.customer.user.name + " is now connected to the bot.")
         }
-        return;
+        return
     }
-    next();
+    next()
 }
 function customerCommand(session, next, handoff) {
-    const message = session.message;
+    const message = session.message
     if (message.text === 'speak to agent') {
         // lookup the conversation (create it if one doesn't already exist)
-        const conversation = handoff.getConversation({ customerConversationId: message.address.conversation.id }, message.address);
+        const conversation = handoff.getConversation({ customerConversationId: message.address.conversation.id }, message.address)
         if (conversation.state == handoff_1.ConversationState.Bot) {
-            handoff.addToTranscript({ customerConversationId: conversation.customer.conversation.id }, message.text);
-            handoff.queueCustomerForAgent({ customerConversationId: conversation.customer.conversation.id });
-            session.send("Connecting you to the next available agent.");
-            return;
+            handoff.addToTranscript({ customerConversationId: conversation.customer.conversation.id }, message.text)
+            handoff.queueCustomerForAgent({ customerConversationId: conversation.customer.conversation.id })
+            session.send("Connecting you to the next available agent.")
+            return
         }
     }
-    return next();
+    return next()
 }
 function sendAgentCommandOptions(session) {
-    const commands = ' ### Agent Options\n - Type *connect* to connect to customer who has been waiting longest.\n - Type *connect { user name }* to connect to a specific conversation\n - Type *list* to see a list of all current conversations.\n - Type *disconnect* while talking to a user to end a conversation.\n - Type *options* at any time to see these options again.';
-    session.send(commands);
-    return;
+    const commands = ' ### Agent Options\n - Type *connect* to connect to customer who has been waiting longest.\n - Type *connect { user name }* to connect to a specific conversation\n - Type *list* to see a list of all current conversations.\n - Type *disconnect* while talking to a user to end a conversation.\n - Type *options* at any time to see these options again.'
+    session.send(commands)
+    return
 }
 function currentConversations(handoff) {
-    const conversations = handoff.currentConversations();
+    const conversations = handoff.currentConversations()
     if (conversations.length === 0) {
-        return "No customers are in conversation.";
+        return "No customers are in conversation."
     }
-    let text = '### Current Conversations \n';
+    let text = '### Current Conversations \n'
     conversations.forEach(conversation => {
-        const starterText = ' - *' + conversation.customer.user.name + '*';
+        const starterText = ' - *' + conversation.customer.user.name + '*'
         switch (handoff_1.ConversationState[conversation.state]) {
             case 'Bot':
-                text += starterText + ' is talking to the bot\n';
-                break;
+                text += starterText + ' is talking to the bot\n'
+                break
             case 'Agent':
-                text += starterText + ' is talking to an agent\n';
-                break;
+                text += starterText + ' is talking to an agent\n'
+                break
             case 'Waiting':
-                text += starterText + ' is waiting to talk to an agent\n';
-                break;
+                text += starterText + ' is waiting to talk to an agent\n'
+                break
         }
-    });
-    return text;
+    })
+    return text
 }
