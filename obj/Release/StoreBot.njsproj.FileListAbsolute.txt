@@ -1,0 +1,2 @@
+C:\Github-MyWork\StoreBotDemo\StoreBot\obj\Release\StoreBot.njsprojResolveAssemblyReference.cache
+C:\Github-MyWork\StoreBotDemo\StoreBot\bin\Microsoft.NodejsTools.WebRole.dll

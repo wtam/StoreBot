@@ -42,8 +42,8 @@ const connectCustomerToBot = (by) => {
     return true;
 };
 // Get
-const getConversation = (by, customerAddress // if looking up by customerConversationId, create new conversation if one doesn't already exist
-) => {
+// if looking up by customerConversationId, create new conversation if one doesn't already exist
+const getConversation = (by, customerAddress ) => {
     // local function to create a conversation if customer does not already have one
     const createConversation = (customerAddress) => {
         const conversation = {
