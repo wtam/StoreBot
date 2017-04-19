@@ -8,6 +8,7 @@ For a complete walkthrough of creating this bot see the article below.
     http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 
 -----------------------------------------------------------------------------*/
+"use strict";
 
 var builder = require('botbuilder');
 var restify = require('restify');
@@ -20,8 +21,8 @@ var geoloc = require('geocode-wifi');
 // *****Importance: the result still not show full wifi list unless clicking the laptop wifi icon to ensure yo usee the other wifi network
 var wifiScanner = require('node-wifi-scanner'); //https://github.com/ancasicolica/node-wifi-scanner
 //handoff to Agent when cusomter say "speak to agent please"
-var handoff_1 = require('./handoff.js');
-var commands_1 = require('./commands.js');
+const handoff_1 = require('./handoff.js');
+const commands_1 = require('./commands.js');
 
 //start ApplicationInsight
 var appInsights = require("applicationinsights"); 
@@ -543,9 +544,9 @@ intents.matches('CustomerRespond', [
             //handoff to Agent when cusomter say "speak to agent please"
             ///use the BotChannel Emulator and set the use box to "Agent Smith" , then ignore the input name
             ///const isAgent = (session) => session.message.user.name.startsWith("Agent");
-            var isAgent = (session) => session.userData.name.startsWith("Agent");
+            const isAgent = (session) => session.userData.name.startsWith("Agent");
             console.log('handing off to Agent = ' + isAgent);
-            var handoff = new handoff_1.Handoff(bot, isAgent);
+            const handoff = new handoff_1.Handoff(bot, isAgent);
             console.log('After handoff before command');
             bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
             console.log('after command');
@@ -595,9 +596,9 @@ intents.onDefault([
         //handoff to Agent when cusomter say "speak to agent please"
         ///use the BotChannel Emulator and set the use box to "Agent Smith" , then ignore the input name
         ///const isAgent = (session) => session.message.user.name.startsWith("Agent");
-        var isAgent = (session) => session.userData.name.startsWith("Agent");
+        const isAgent = (session) => session.userData.name.startsWith("Agent");
         console.log('handing off to Agent = ' + isAgent);
-        var handoff = new handoff_1.Handoff(bot, isAgent);
+        const handoff = new handoff_1.Handoff(bot, isAgent);
         console.log('After handoff before command');
         bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
         console.log('after command');
