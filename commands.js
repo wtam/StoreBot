@@ -37,7 +37,7 @@ function agentCommand(session, next, handoff) {
     if (!conversation) {
         switch (inputWords[0]) {
             case 'connect':
-                const newConversation = handoff.connectCustomerToAgent(inputWords.length > 1
+                var newConversation = handoff.connectCustomerToAgent(inputWords.length > 1
                     ? { customerName: inputWords.slice(1).join(' ') }
                     : { bestChoice: true }, message.address);
                 if (newConversation) {
@@ -68,10 +68,10 @@ function agentCommand(session, next, handoff) {
     next();
 }
 function customerCommand(session, next, handoff) {
-    const message = session.message;
+    var message = session.message;
     if (message.text === 'speak to agent') {
         // lookup the conversation (create it if one doesn't already exist)
-        const conversation = handoff.getConversation({ customerConversationId: message.address.conversation.id }, message.address);
+        var conversation = handoff.getConversation({ customerConversationId: message.address.conversation.id }, message.address);
         if (conversation.state == handoff_1.ConversationState.Bot) {
             handoff.addToTranscript({ customerConversationId: conversation.customer.conversation.id }, message.text);
             handoff.queueCustomerForAgent({ customerConversationId: conversation.customer.conversation.id });
@@ -82,18 +82,18 @@ function customerCommand(session, next, handoff) {
     return next();
 }
 function sendAgentCommandOptions(session) {
-    const commands = ' ### Agent Options\n - Type *connect* to connect to customer who has been waiting longest.\n - Type *connect { user name }* to connect to a specific conversation\n - Type *list* to see a list of all current conversations.\n - Type *disconnect* while talking to a user to end a conversation.\n - Type *options* at any time to see these options again.';
+    var commands = ' ### Agent Options\n - Type *connect* to connect to customer who has been waiting longest.\n - Type *connect { user name }* to connect to a specific conversation\n - Type *list* to see a list of all current conversations.\n - Type *disconnect* while talking to a user to end a conversation.\n - Type *options* at any time to see these options again.';
     session.send(commands);
     return;
 }
 function currentConversations(handoff) {
-    const conversations = handoff.currentConversations();
+    var conversations = handoff.currentConversations();
     if (conversations.length === 0) {
         return "No customers are in conversation.";
     }
     let text = '### Current Conversations \n';
     conversations.forEach(conversation => {
-        const starterText = ' - *' + conversation.customer.user.name + '*';
+        var starterText = ' - *' + conversation.customer.user.name + '*';
         switch (handoff_1.ConversationState[conversation.state]) {
             case 'Bot':
                 text += starterText + ' is talking to the bot\n';
