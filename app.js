@@ -36,6 +36,7 @@ var speech = require('./speech.js');
 var send_to_StorebotEventHub = require('./send_to_eventhub.js');
 
 var server = restify.createServer();
+//why the port run time change to 1337??????
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
@@ -591,5 +592,15 @@ intents.onDefault([
         var task2 = function () { sleep(1000); player('./media/onDefault.wav');};
         Fiber(task1).run();
         Fiber(task2).run();
+
+        //handoff to Agent when cusomter say "speak to agent please"
+        ///use the BotChannel Emulator and set the use box to "Agent Smith" , then ignore the input name
+        ///const isAgent = (session) => session.message.user.name.startsWith("Agent");
+        const isAgent = (session) => session.userData.name.startsWith("Agent");
+        console.log('handing off to Agent = ' + isAgent);
+        const handoff = new handoff_1.Handoff(bot, isAgent);
+        console.log('After handoff before command');
+        bot.use(commands_1.commandsMiddleware(handoff), handoff.routingMiddleware());
+        console.log('after command');
     }
 ]);
