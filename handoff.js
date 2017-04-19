@@ -1,6 +1,8 @@
 "use strict"
 const builder = require('botbuilder')
+console.log("Before provider")
 const provider_1 = require('./provider')
+console.log("After provider")
 // Options for state of a conversation
 // Customer talking to bot, waiting for next available agent or talking to an agent
 var ConversationState
