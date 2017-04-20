@@ -20,7 +20,12 @@ var geoloc = require('geocode-wifi');
 // Command: netsh wlan show networks mode=Bssid
 // *****Importance: the result still not show full wifi list unless clicking the laptop wifi icon to ensure yo usee the other wifi network
 var wifiScanner = require('node-wifi-scanner'); //https://github.com/ancasicolica/node-wifi-scanner
+
+//*******************
 //handoff to Agent when cusomter say "speak to agent please"
+// Changing the nodejs from 4.2.3 to 6.9.1 (WEBSITE_NODE_DEFAULT_VERSION under App Setting) to fix the use strict invliad token issue on Azure
+// https://social.msdn.microsoft.com/Forums/en-US/d71ee8cb-9912-415b-919b-842f480c7862/nodejs-web-apps-chatbot-on-azure?forum=windowsazurewebsitespreview
+//
 const handoff_1 = require('./handoff.js');
 const commands_1 = require('./commands.js');
 

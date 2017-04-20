@@ -25,7 +25,7 @@ function agentCommand(session, next, handoff) {
     if (inputWords.length == 0)
         return
     // Commands to execute whether connected to a customer or not
-    if (inputWords[0] === 'options') {
+    if (inputWords[0] === 'options' || inputWords[0]  == 'option') {
         sendAgentCommandOptions(session)
         return
     }
