@@ -24,6 +24,10 @@ function agentCommand(session, next, handoff) {
     const inputWords = message.text.split(' ')
     if (inputWords.length == 0)
         return
+
+    //start logging the agent inputs
+    console.log(ssession.userData.name + ' input : ' + session.message.text);
+
     // Commands to execute whether connected to a customer or not
     if (inputWords[0] === 'options' || inputWords[0]  == 'option') {
         sendAgentCommandOptions(session)
@@ -69,9 +73,14 @@ function agentCommand(session, next, handoff) {
 }
 function customerCommand(session, next, handoff) {
     const message = session.message
+
+    //start logging the customer inputs
+    console.log(ssession.userData.name + ' input: ' + session.message.text);
+
     if (message.text === 'speak to agent') {
         // lookup the conversation (create it if one doesn't already exist)
         const conversation = handoff.getConversation({ customerConversationId: message.address.conversation.id }, message.address)
+
         if (conversation.state == handoff_1.ConversationState.Bot) {
             handoff.addToTranscript({ customerConversationId: conversation.customer.conversation.id }, message.text)
             handoff.queueCustomerForAgent({ customerConversationId: conversation.customer.conversation.id })
