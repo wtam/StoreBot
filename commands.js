@@ -26,7 +26,7 @@ function agentCommand(session, next, handoff) {
         return
 
     //start logging the agent inputs
-    console.log(ssession.userData.name + ' input : ' + session.message.text);
+    console.log(session.userData.name + ' input : ' + session.message.text);
 
     // Commands to execute whether connected to a customer or not
     if (inputWords[0] === 'options' || inputWords[0]  == 'option') {
@@ -75,7 +75,7 @@ function customerCommand(session, next, handoff) {
     const message = session.message
 
     //start logging the customer inputs
-    console.log(ssession.userData.name + ' input: ' + session.message.text);
+    console.log(session.userData.name + ' input: ' + session.message.text);
 
     if (message.text === 'speak to agent') {
         // lookup the conversation (create it if one doesn't already exist)
