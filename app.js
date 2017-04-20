@@ -76,7 +76,9 @@ server.get(/.*/, restify.serveStatic({
 //This is the StorBotLuis
 //preview Luis model have issue of intents always return null
 //var model = 'https://api.projectoxford.ai/luis/v1/application/preview?id=f567c7e9-c4ab-442d-8956-41cb1c8bcffc&subscription-key=7e282443df6b4699b0fdc189cde863d5&q=';
-var model = 'https://api.projectoxford.ai/luis/v1/application?id=f567c7e9-c4ab-442d-8956-41cb1c8bcffc&subscription-key=7e282443df6b4699b0fdc189cde863d5&q=';
+//updating model to new luis endpoint url
+//var model = process.env.luisEndpointUrl;
+var model = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/f567c7e9-c4ab-442d-8956-41cb1c8bcffc?subscription-key=f5a1c2fc5ea0407ba30aed8e2e27187c&timezoneOffset=8.0&verbose=true&spellCheck=true&q='
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
