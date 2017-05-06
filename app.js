@@ -106,9 +106,28 @@ tree.addPoint(Mongkok);     //Shop No.C1, G/F. & Whole of Mezzanine Floor, Wu Sa
 tree.addPoint(YuenLong);     //142 Castle Peak Road,Yuen Long, N.T.
 tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanling, N.T.
 
+var lastAccessTime = Date.now()  //not sure why if I set this into the session variable won't get its update in the setTimeout fn?  Similar to session.sessionState.lastAccess that sometime not work!
+
 // Install First Run middleware and dialog
 bot.use({
-    botbuilder: function (session, next) {
+    botbuilder: function (session, next) {     
+        //set timeout if user not responding within 5 mins, end the session
+        lastAccessTime = Date.now()
+        console.log("Last Acess Time: ", lastAccessTime) 
+        setTimeout(function () {
+            console.log("Now: ", Date.now(), " - Last Access Time: ", lastAccessTime)
+            var idleTime = Date.now() - lastAccessTime
+            var shouldExpire = (session) => idleTime > 300000 //5 mins
+            if (shouldExpire(session)) {
+                session.endConversation('Session idle over 5 mins. Session end....' + idleTime)
+                session.clearDialogStack()
+                session.reset()
+                session.userData.firstRun = false
+            } else {
+                console.log("idleTime less than max of 5 mins, keep the session")
+            }
+        }, 300000) //5 mins
+
         if (!session.userData.firstRun) {
             session.userData.firstRun = true;
             session.userData.isLogging = true;  //logging user conversation to session.message.text
@@ -118,6 +137,8 @@ bot.use({
         }
     }
 });
+
+
 
 var Fiber = require('fibers');
 function sleep(milliseconds) {
@@ -131,25 +152,33 @@ function sleep(milliseconds) {
     //console.log(log_sequence_counter++ + task + ' thread/fiber resumed');
 }
 
+/*
+bot.dialog('/timeout', function (session) {
+    session.send("Oops. You were idle for too long. We will start over from the beginning.");
+    //redirect to initial welcome message again to start over
+    session.userData.firstRun = true;
+    session.userData.isLogging = true;  //logging user conversation to session.message.text
+    session.beginDialog('/firstRun');
+}); */
+
 
 bot.dialog('/firstRun', [
     function (session) {
         var str = "Hello, I'm a E-Store Bot.....What's your name?";
         var strChinese = "你好啊，我係一個 E Store Bot.....我應該點稱呼你？"
-            //console.log('Converting from text -> speech');
-            //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
-            /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
-                if (err) return console.log(err);
-                console.log('Wrote out: ' + 'voiceRespond.wav');
-                player('voiceRespond.wav');
-            }) */
-        var task1 = function () {builder.Prompts.text(session, str)};
-        var task2 = function () { sleep(1000); player('./media/greeting.wav');};
+        //console.log('Converting from text -> speech');
+        //speech.textToSpeech(str, 'voiceRespond.wav', function (err) {
+        /*speech.textToSpeech(strChinese, 'voiceRespond.wav', function (err) {
+            if (err) return console.log(err);
+            console.log('Wrote out: ' + 'voiceRespond.wav');
+            player('voiceRespond.wav');
+        }) */
+        var task1 = function () { builder.Prompts.text(session, str) };
+        var task2 = function () { sleep(1000); player('./media/greeting.wav'); };
         Fiber(task1).run();
         Fiber(task2).run();
-        
     },
-    function (session, results) {
+    function(session, results) {
 
         //kornHill
         //var closest = tree.findClosest(new geo.GeoPoint(22.282832, 114.216016));
@@ -160,6 +189,7 @@ bot.dialog('/firstRun', [
         // /firstRun dialog from the callstack. If we called endDialog() here
         // the conversation would end since the /firstRun dialog is the only 
         // dialog on the stack.
+
         session.userData.name = results.response
         var str = session.userData.name + ",....I can help you to find Beauty or Baby product from e-Store and medicine service";
         var strChinese = session.userData.name + ", .....我可意係 E Store 裡面幫你揾到 美容或嬰兒產品 同 醫療服務";
@@ -172,7 +202,6 @@ bot.dialog('/firstRun', [
         session.send(str);
         //session.replaceDialog('/');  //don't use this as it somehow not able to detect the 1st repalce intent????
         session.endDialog();
-
     }
 ]); 
 
@@ -236,11 +265,13 @@ intents.matches('BeautyEnquiry', [
                 var task1 = function () { session.send(reply) };
                 var task2 = function () { sleep(1000); player('./media/bbCream.wav'); };
                 Fiber(task1).run();
-                Fiber(task2).run();
+                Fiber(task2).run();               
+
                 //console.log(session.message.text);
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryBBCream");
-                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryBBCream", session.message.text, 0.5);             
+                send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryBBCream", session.message.text, 0.5);  
+                            
              } else if (builder.EntityRecognizer.findAllEntities(args.entities, "2 way cake")) {
                  //This code never execute as the entity never match!
                  var str = "We've Lorea true match two way powder, would you like to try it?";
@@ -254,6 +285,7 @@ intents.matches('BeautyEnquiry', [
                 //reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://www.watsons.com.hk/medias/sys_master/front/prd/8798530404382.jpg' });
                 reply.addAttachment({ contentType: 'image/jpeg', contentUrl: 'http://storebotwebapp.azurewebsites.net/2wayCake.jpg' });
                 session.send(reply);
+               
                  //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiry2WayCake");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiry2WayCake", session.message.text, 0.5); //change 0.5 to avg sentinment
@@ -280,6 +312,7 @@ intents.matches('BeautyEnquiry', [
                 var task2 = function () { sleep(1000); player('./media/lipstick.wav'); };
                 Fiber(task1).run();
                 Fiber(task2).run();
+
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryLips");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryLips", session.message.text, 0.5); //change 0.5 to avg sentinment
@@ -306,6 +339,7 @@ intents.matches('BeautyEnquiry', [
                 var task2 = function () { sleep(1000); player('./media/eyeShadow.wav'); };
                 Fiber(task1).run();
                 Fiber(task2).run();
+                
                 //appInsight  custom event
                 appInsightClient.trackEvent("BeautyFaceProductEnquiryEyes");
                 send_to_StorebotEventHub.sendrequests(session.userData.name, "BeautyFaceProductEnquiryEyes", session.message.text, 0.5); //change 0.5 to avg sentinment
@@ -326,6 +360,7 @@ intents.matches('BeautyEnquiry', [
             var task2 = function () { sleep(1000); player('./media/otherBeautyProduct.wav'); };
             Fiber(task1).run();
             Fiber(task2).run();
+            
         }
     }
 ]);
