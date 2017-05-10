@@ -117,7 +117,7 @@ bot.use({
         if (!session.userData.firstRun) {
                 session.userData.sessionID = uuid.v4()
         }
-        //set timeout if user not responding within 5 mins, end the session      
+        //set timeout if user not responding within 3 mins, end the session      
         session.userData.lastAccess = Date.now()
         client.on("error", function (err) {
             console.log("Error " + err);
