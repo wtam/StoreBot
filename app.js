@@ -108,8 +108,6 @@ tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanlin
 
 //session is circular structure and seems not sereilize even using session.save(), so use redis to store instead
 var redis = require('redis'), client = redis.createClient(6379, "127.0.0.1");
-//adding socket io to see if it can address redia EACCESS issue on Azure webApp
-var io = require('socket.io')(client);
 var uuid = require('node-uuid')
 
 // Install First Run middleware and dialog
