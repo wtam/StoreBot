@@ -108,7 +108,7 @@ tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanlin
 
 //session is circular structure and seems not sereilize even using session.save(), so use redis to store instead
 var redis = require('redis') //, client = redis.createClient(6379, "127.0.0.1");
-var client = redis.createClient(6380, 'rediscachedhkdemo.redis.cache.windows.net', { auth_pass: '9K1DvwWpUAfj2rXyYIJ9D8CDp4HtyzxEjVS2xum42Rg=', tls: { servername: 'rediscachedhkdemo.redis.cache.windows.net' } });
+var client = redis.createClient(6379, 'rediscachedhkdemo.redis.cache.windows.net', { auth_pass: '9K1DvwWpUAfj2rXyYIJ9D8CDp4HtyzxEjVS2xum42Rg=', tls: { servername: 'rediscachedhkdemo.redis.cache.windows.net' } });
 ///var client = redis.createClient(6379, process.env.rediscachehkdemoUrl, { auth_pass: process.env.rediscachehkdemoPrimKey, tls: { servername: process.env.rediscachehkdemoUrl } });
 var uuid = require('node-uuid')
 
