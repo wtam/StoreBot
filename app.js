@@ -107,7 +107,7 @@ tree.addPoint(YuenLong);     //142 Castle Peak Road,Yuen Long, N.T.
 tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanling, N.T.
 
 //session is circular structure and seems not sereilize even using session.save(), so use redis to store instead
-var redis = require('redis'), client = redis.createClient();
+var redis = require('redis'), client = redis.createClient(6379, "127.0.0.1");
 var uuid = require('node-uuid')
 
 // Install First Run middleware and dialog
