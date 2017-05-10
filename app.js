@@ -107,8 +107,8 @@ tree.addPoint(YuenLong);     //142 Castle Peak Road,Yuen Long, N.T.
 tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanling, N.T.
 
 //session is circular structure and seems not sereilize even using session.save(), so use redis to store instead
-var redis = require('redis') //, client = redis.createClient(6379, "127.0.0.1", { no_ready_check: true });
-var client = redis.createClient(6379, 'rediscachedhkdemo.redis.cache.windows.net', { auth_pass: '9K1DvwWpUAfj2rXyYIJ9D8CDp4HtyzxEjVS2xum42Rg=', tls: { servername: 'rediscachedhkdemo.redis.cache.windows.net' } });
+var redis = require('redis') , client = redis.createClient(6379, "127.0.0.1");
+//var client = redis.createClient(6379, 'rediscachedhkdemo.redis.cache.windows.net', { auth_pass: '9K1DvwWpUAfj2rXyYIJ9D8CDp4HtyzxEjVS2xum42Rg=', tls: { servername: 'rediscachedhkdemo.redis.cache.windows.net' } });
 ///var client = redis.createClient(6379, process.env.rediscachehkdemoUrl, { auth_pass: process.env.rediscachehkdemoPrimKey, tls: { servername: process.env.rediscachehkdemoUrl } });
 var uuid = require('node-uuid')
 
@@ -119,7 +119,7 @@ bot.use({
         if (!session.userData.firstRun) {
                 session.userData.sessionID = uuid.v4()
         }
-        //set timeout if user not responding within 3 mins, end the session      
+        //set timeout if user not responding within the period, end the session if exist     
         session.userData.lastAccess = Date.now()
         client.on("error", function (err) {
             console.log("Error " + err);
@@ -139,9 +139,9 @@ bot.use({
             client.get(session.userData.sessionID, function (err, retrieveLastAccess) {               
                 console.log("Time's up - userData.sessionID: " , session.userData.sessionID, " retrieveLastAccess: " , retrieveLastAccess)
                 var idleTime = now - parseInt(retrieveLastAccess)
-                var shouldExpire = (session) => idleTime >= 180000
+                var shouldExpire = (session) => idleTime >= 60000
                 if (shouldExpire(session)) {
-                    session.endConversation('Session idle over 3 mins. Session end....' + idleTime)
+                    session.endConversation('Session idle over 1 min. Session end....' + idleTime)
                     client.del(session.userData.sessionID, function (err, reply) {
                         console.log(reply, "Clearing the redis entry.....")
                     })
@@ -149,10 +149,10 @@ bot.use({
                     session.reset()
                     session.userData.firstRun = false
                 } else {
-                    console.log("idleTime less than max of 3 mins, keep the session")
+                    console.log("idleTime less than max of 1 min, keep the session")
                 } 
             });
-        }, 180000) //3 mins
+        }, 60000) //1 mins
         
         if (!session.userData.firstRun) {
             session.userData.firstRun = true;
