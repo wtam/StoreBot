@@ -106,28 +106,49 @@ tree.addPoint(Mongkok);     //Shop No.C1, G/F. & Whole of Mezzanine Floor, Wu Sa
 tree.addPoint(YuenLong);     //142 Castle Peak Road,Yuen Long, N.T.
 tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanling, N.T.
 
-var lastAccessTime = Date.now()  //not sure why if I set this into the session variable won't get its update in the setTimeout fn?  Similar to session.sessionState.lastAccess that sometime not work!
+//session is circular structure and seems not sereilize even using session.save(), so use redis to store instead
+var redis = require('redis'), client = redis.createClient();
+var uuid = require('node-uuid')
 
 // Install First Run middleware and dialog
 bot.use({
-    botbuilder: function (session, next) {     
-        //set timeout if user not responding within 5 mins, end the session
-        lastAccessTime = Date.now()
-        console.log("Last Acess Time: ", lastAccessTime) 
-        setTimeout(function () {
-            console.log("Now: ", Date.now(), " - Last Access Time: ", lastAccessTime)
-            var idleTime = Date.now() - lastAccessTime
-            var shouldExpire = (session) => idleTime > 300000 //5 mins
-            if (shouldExpire(session)) {
-                session.endConversation('Session idle over 5 mins. Session end....' + idleTime)
-                session.clearDialogStack()
-                session.reset()
-                session.userData.firstRun = false
-            } else {
-                console.log("idleTime less than max of 5 mins, keep the session")
+    botbuilder: function (session, next) {
+        //assign my own user session id as redis key
+        if (!session.userData.firstRun) {
+                session.userData.sessionID = uuid.v4()
+        }
+        //set timeout if user not responding within 5 mins, end the session      
+        session.userData.lastAccess = Date.now()
+        client.on("error", function (err) {
+            console.log("Error " + err);
+        })
+        client.exists(session.userData.sessionID, function(err, reply) {
+            if (reply === 1) {
+                console.log('userData.sessionID exists, need to delete so that can replace the new lastAccess value in redis')
+                client.del(session.userData.sessionID, function(err, reply) {
+                    console.log(reply, "sessionID: ", session.userData.sessionID, "AccessTime deleted and will be replaced to ",session.userData.lastAccess)
+                })
             }
-        }, 300000) //5 mins
-
+            client.set(session.userData.sessionID, String(session.userData.lastAccess));
+        });
+        console.log("userData.sessionID: " , session.userData.sessionID, " userData.lastAccess: ", session.userData.lastAccess)
+        setTimeout(function () {
+            var now = Date.now()            
+            client.get(session.userData.sessionID, function (err, retrieveLastAccess) {               
+                console.log("Time's up - userData.sessionID: " , session.userData.sessionID, " retrieveLastAccess: " , retrieveLastAccess)
+                var idleTime = now - parseInt(retrieveLastAccess)
+                var shouldExpire = (session) => idleTime >= 180000
+                if (shouldExpire(session)) {
+                    session.endConversation('Session idle over 3 mins. Session end....' + idleTime)
+                    session.clearDialogStack()
+                    session.reset()
+                    session.userData.firstRun = false
+                } else {
+                    console.log("idleTime less than max of 3 mins, keep the session")
+                } 
+            });
+        }, 180000) //3 mins
+        
         if (!session.userData.firstRun) {
             session.userData.firstRun = true;
             session.userData.isLogging = true;  //logging user conversation to session.message.text
@@ -137,8 +158,6 @@ bot.use({
         }
     }
 });
-
-
 
 var Fiber = require('fibers');
 function sleep(milliseconds) {
@@ -153,14 +172,31 @@ function sleep(milliseconds) {
 }
 
 /*
-bot.dialog('/timeout', function (session) {
-    session.send("Oops. You were idle for too long. We will start over from the beginning.");
-    //redirect to initial welcome message again to start over
-    session.userData.firstRun = true;
-    session.userData.isLogging = true;  //logging user conversation to session.message.text
-    session.beginDialog('/firstRun');
-}); */
+bot.on('receive', (event)  => {
+    bot.isInConversation(event.address, (err, lastAccess) => {
+       //Note: lastAccess will be null for the user 1st message
+        console.log("Now Time: ", Date.now(), "User last Access Time: ", lastAccess)
+        setTimeout(function () {
+            if (lastAccess != null) {
+                console.log("Now Time:: ", Date.now(), "last Access Time: ", lastAccess)
+                var idleTime = (Date.now() - self.lastAccess);
+                if (idleTime > 15000) {
+                    bot.beginDialog(event.address, '/timeoutSession')
+                } else {
+                    console.log("idleTime less than max of 15 sec, keep the session")
+                }
+            }
+            //else its the 1st message, conversation not start yet so lastAccess == null
+        }, 15000)
+    });
+}); 
 
+bot.dialog('/timeoutSession', function (session) {
+      session.endConversation('Session idle over 15 sec. Session end....' + idleTime)
+      session.clearDialogStack()
+      session.reset()
+      session.userData.firstRun = false
+}); */
 
 bot.dialog('/firstRun', [
     function (session) {
