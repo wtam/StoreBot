@@ -109,9 +109,9 @@ tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanlin
 //session is circular structure and seems not sereilize even using session.save(), so use redis to store instead
 var redis = require('redis'), client = redis.createClient(6379, "127.0.0.1", {no_ready_check: true });
 // stackoverflow.com/questions/40112057/using-socket-io-redis-on-azure-web-service
-//var io = require('socket.io')({ transports: ['websocket'] });
-//io.on('connection', function (client) { });
-//io.listen(6379);
+var io = require('socket.io')({ transports: ['websocket'] });
+io.on('connection', function (client) { });
+io.listen(6379);
 
 var uuid = require('node-uuid')
 
