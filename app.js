@@ -68,7 +68,7 @@ var player = edge.func(function () {/*
 // replace the above chat connector to call connector
 var connector = new builderCalling.CallConnector({
     // add the call back for skypecall
-    callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
+    callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/messages',
 
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
