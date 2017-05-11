@@ -105,22 +105,11 @@ bot.dialog('/', intents);
 //botCalling.dialog('/', [
 botCalling.dialog('/',
     function (session) {
-        session.userData.firstRun = true;
+        session.send("Who is calling me ah ha!")
+        /*session.userData.firstRun = true;
         session.userData.isLogging = true;
-        session.beginDialog('/firstRun');
+        session.beginDialog('/firstRun');*/
     }
-    /*
-    function (session, args, next) {
-        if (!session.userData.name) {
-            session.beginDialog('/profile');
-        } else {
-            next();
-        }
-    },
-    function (session, results) {
-        session.send('Hello %s!', session.userData.name);
-    }*/
-    //]);
 );
 
 //setup the store that has Chinese medicine for closest geolocation detection
