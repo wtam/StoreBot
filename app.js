@@ -46,7 +46,7 @@ var send_to_StorebotEventHub = require('./send_to_eventhub.js');
 
 // Create restify server for chat 
 var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, function () {
+server.listen(process.env.port || process.env.PORT || 3978, '127.0.0.1', function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 // voice respond for native client, below comment is required, don't remove!!!!!!
@@ -63,7 +63,7 @@ var player = edge.func(function () {/*
 
 // Setup Restify Server for call bot
 var server2 = restify.createServer();
-server2.listen(process.env.port || process.env.PORT || 3979, function () {
+server2.listen(process.env.port2 || process.env.PORT2 || 3979, '127.0.0.1', function () {
     console.log('%s listening to %s', server2.name, server2.url);
 });
 
