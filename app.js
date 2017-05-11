@@ -65,19 +65,22 @@ var player = edge.func(function () {/*
 
 // Create Chat bot
 var connector = new builder.ChatConnector({
-// replace the above chat connector to call connector
-//var connector = new builderCalling.CallConnector({
-    // add the call back for skypecall
-    //callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+});
+
+var connectorCalling = new builderCalling.CallConnector({
+// add the call back for skypecall
+    callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
 var bot = new builder.UniversalBot(connector);
-// replace the above bot to calling bot
-//var bot = new builderCalling.UniversalCallBot(connector);
+var botCalling = new builderCalling.UniversalCallBot(connectorCalling);
+
 server.post('/api/messages', connector.listen());
-//server.post('/api/calls', connector.listen());
+server.post('/api/calls', connectorCalling.listen());
 
 
 //Serve files download
@@ -98,7 +101,12 @@ var model = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/f567c7e9-
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
+// Add root dialog
 bot.dialog('/', intents);
+botCalling.dialog('/', function (session) {
+    session.send('Watson... come here!');
+});
+
 
 //setup the store that has Chinese medicine for closest geolocation detection
 //map Waston store addrees to its geolocation using http://www.latlong.net/
