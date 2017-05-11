@@ -141,7 +141,8 @@ bot.use({
         //assign my own user session id as redis key
         if (!session.userData.firstRun) {
             session.userData.sessionID = uuid.v4()
-            session.send('Hello... Who is calling me!');
+            if (session.message.source == 'skype')
+                session.send('Hello... Who is calling me!');
         }
         //set timeout if user not responding within the period, end the session if exist     
         session.userData.lastAccess = Date.now()
