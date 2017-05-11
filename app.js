@@ -102,9 +102,26 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
 // Add root dialog
 bot.dialog('/', intents);
-//botCalling.dialog('/', function (session) {
-botCalling.dialog('/', intents);
-
+//botCalling.dialog('/', [
+botCalling.dialog('/',
+    function (session) {
+        session.userData.firstRun = true;
+        session.userData.isLogging = true;
+        session.beginDialog('/firstRun');
+    }
+    /*
+    function (session, args, next) {
+        if (!session.userData.name) {
+            session.beginDialog('/profile');
+        } else {
+            next();
+        }
+    },
+    function (session, results) {
+        session.send('Hello %s!', session.userData.name);
+    }*/
+    //]);
+);
 
 //setup the store that has Chinese medicine for closest geolocation detection
 //map Waston store addrees to its geolocation using http://www.latlong.net/
