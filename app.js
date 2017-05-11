@@ -68,8 +68,7 @@ var player = edge.func(function () {/*
 // replace the above chat connector to call connector
 var connector = new builderCalling.CallConnector({
     // add the call back for skypecall
-    callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/messages',
-
+    callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
@@ -77,7 +76,8 @@ var connector = new builderCalling.CallConnector({
 // var bot = new builder.UniversalBot(connector);
 // replace the above bot to calling bot
 var bot = new builderCalling.UniversalCallBot(connector);
-server.post('/api/messages', connector.listen());
+//server.post('/api/messages', connector.listen());
+server.post('/api/calls', connector.listen());
 
 /*
 var botCall = new calling.UniversalCallBot(connectorCall);
