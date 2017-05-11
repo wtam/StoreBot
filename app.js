@@ -82,7 +82,6 @@ var botCalling = new builderCalling.UniversalCallBot(connectorCalling);
 server.post('/api/messages', connector.listen());
 server.post('/api/calls', connectorCalling.listen());
 
-
 //Serve files download
 server.get(/.*/, restify.serveStatic({
     'directory': 'media',
@@ -103,9 +102,8 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
 // Add root dialog
 bot.dialog('/', intents);
-botCalling.dialog('/', function (session) {
-    session.send('Watson... come here!');
-});
+//botCalling.dialog('/', function (session) {
+botCalling.dialog('/', intents);
 
 
 //setup the store that has Chinese medicine for closest geolocation detection
@@ -143,8 +141,8 @@ bot.use({
         //assign my own user session id as redis key
         if (!session.userData.firstRun) {
             session.userData.sessionID = uuid.v4()
-            //if (session.message.source == 'skype')
-                //session.send('Hello... Who is calling me!');
+            if (session.message.source == 'skype')
+                session.send('Hello... Who is calling me!');
         }
         //set timeout if user not responding within the period, end the session if exist     
         session.userData.lastAccess = Date.now()
