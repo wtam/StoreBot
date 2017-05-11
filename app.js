@@ -11,7 +11,7 @@ For a complete walkthrough of creating this bot see the article below.
 "use strict";
 
 var builder = require('botbuilder');
-// Calling bot and mesage bot are running side by side
+// Calling bot and mesage bot are running side by side, cant find a way to mix the 2 bot yet as Azure keep having iisnode permission issues
 var calling = require('botbuilder-calling');
 
 var restify = require('restify');
@@ -46,7 +46,7 @@ var send_to_StorebotEventHub = require('./send_to_eventhub.js');
 
 // Create restify server for chat 
 var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, '127.0.0.1', function () {
+server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 // voice respond for native client, below comment is required, don't remove!!!!!!
@@ -68,18 +68,21 @@ var connector = new builder.ChatConnector({
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
+/*
 // Create calling bot
 var connectorCall = new calling.CallConnector({
     callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
+*/
 
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
+/*
 var botCall = new calling.UniversalCallBot(connectorCall);
-server.post('/api/calls', connectorCall.listen());
+server.post('/api/calls', connectorCall.listen());*/
 
 // Add root dialog for call bot
 botCall.dialog('/', function (session) {
