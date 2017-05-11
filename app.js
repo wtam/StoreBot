@@ -64,34 +64,28 @@ var player = edge.func(function () {/*
 
 
 // Create Chat bot
-// var connector = new builder.ChatConnector({
+var connector = new builder.ChatConnector({
 // replace the above chat connector to call connector
-var connector = new builderCalling.CallConnector({
+//var connector = new builderCalling.CallConnector({
     // add the call back for skypecall
-    callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
+    //callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
-// var bot = new builder.UniversalBot(connector);
+var bot = new builder.UniversalBot(connector);
 // replace the above bot to calling bot
-var bot = new builderCalling.UniversalCallBot(connector);
-//server.post('/api/messages', connector.listen());
-server.post('/api/calls', connector.listen());
+//var bot = new builderCalling.UniversalCallBot(connector);
+server.post('/api/messages', connector.listen());
+//server.post('/api/calls', connector.listen());
 
-/*
-var botCall = new calling.UniversalCallBot(connectorCall);
-server.post('/api/calls', connectorCall.listen());
-// Add root dialog for call bot
-botCall.dialog('/', function (session) {
-    session.send('Watson... come here!');
-}); */
 
 //Serve files download
 server.get(/.*/, restify.serveStatic({
     'directory': 'media',
     'index': false,
     //'default': 'sad.jpg',
+    'default': 'index.html',
 }));
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
@@ -141,8 +135,8 @@ bot.use({
         //assign my own user session id as redis key
         if (!session.userData.firstRun) {
             session.userData.sessionID = uuid.v4()
-            if (session.message.source == 'skype')
-                session.send('Hello... Who is calling me!');
+            //if (session.message.source == 'skype')
+                //session.send('Hello... Who is calling me!');
         }
         //set timeout if user not responding within the period, end the session if exist     
         session.userData.lastAccess = Date.now()
