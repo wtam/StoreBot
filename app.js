@@ -107,8 +107,9 @@ tree.addPoint(YuenLong);     //142 Castle Peak Road,Yuen Long, N.T.
 tree.addPoint(Fanling);     //Shop No. 28B, Level 2, Fanling Town Centre, Fanling, N.T.
 
 //session is circular structure and seems not sereilize even using session.save(), so use redis to store instead
-var redis = require('redis') //, client = redis.createClient(6379, "127.0.0.1");
-var client = redis.createClient(6379, 'rediscachedhkdemo.redis.cache.windows.net', { auth_pass: '9K1DvwWpUAfj2rXyYIJ9D8CDp4HtyzxEjVS2xum42Rg=', tls: { servername: 'rediscachedhkdemo.redis.cache.windows.net' } });
+var redis = require('redis') ///, client = redis.createClient(6379, "127.0.0.1");
+//For Azure Redis don't use the non SSL 6379 port as both get and set command will not work with no err!!!!
+var client = redis.createClient(6380, 'rediscachedhkdemo.redis.cache.windows.net', { auth_pass: '9K1DvwWpUAfj2rXyYIJ9D8CDp4HtyzxEjVS2xum42Rg=', tls: { servername: 'rediscachedhkdemo.redis.cache.windows.net' }, socket_keepalive:	true });
 ///var client = redis.createClient(6379, process.env.rediscachehkdemoUrl, { auth_pass: process.env.rediscachehkdemoPrimKey, tls: { servername: process.env.rediscachehkdemoUrl } });
 var uuid = require('node-uuid')
 
@@ -124,15 +125,17 @@ bot.use({
         client.on("error", function (err) {
             console.log("Error " + err);
         })
-        client.exists(session.userData.sessionID, function(err, reply) {
+        
+        client.exists(session.userData.sessionID, function (err, reply) {
+            console.log (reply)
             if (reply === 1) {
                 console.log('userData.sessionID exists, need to delete so that can replace the new lastAccess value in redis')
                 client.del(session.userData.sessionID, function(err, reply) {
                     console.log(reply, "sessionID: ", session.userData.sessionID, "AccessTime deleted and will be replaced to ",session.userData.lastAccess)
                 })
             }
-            client.set(session.userData.sessionID, String(session.userData.lastAccess));
-        });
+            client.set(session.userData.sessionID, String(session.userData.lastAccess), function(err, reply) {console.log("Redis Set reply: ", reply) });
+        }); 
         console.log("userData.sessionID: " , session.userData.sessionID, " userData.lastAccess: ", session.userData.lastAccess)
         setTimeout(function () {
             var now = Date.now()            
