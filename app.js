@@ -44,7 +44,7 @@ var speech = require('./speech.js');
 //Send telemetry to Evenhub
 var send_to_StorebotEventHub = require('./send_to_eventhub.js');
 
-// Let see if I can reuse the restify server for both chat and calling
+// Create restify server for chat 
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
@@ -60,6 +60,13 @@ var player = edge.func(function () {/*
         return null;
     }
 */ });
+
+// Setup Restify Server for call bot
+var server2 = restify.createServer();
+server2.listen(process.env.port || process.env.PORT || 3979, function () {
+    console.log('%s listening to %s', server2.name, server2.url);
+});
+
 
 // Create Chat bot
 var connector = new builder.ChatConnector({
@@ -78,7 +85,7 @@ var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
 var botCall = new calling.UniversalCallBot(connectorCall);
-server.post('/api/calls', connector.listen());
+server2.post('/api/calls', connector.listen());
 
 // Add root dialog for call bot
 botCall.dialog('/', function (session) {
