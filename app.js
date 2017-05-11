@@ -82,12 +82,11 @@ server.post('/api/messages', connector.listen());
 
 /*
 var botCall = new calling.UniversalCallBot(connectorCall);
-server.post('/api/calls', connectorCall.listen());*/
-
+server.post('/api/calls', connectorCall.listen());
 // Add root dialog for call bot
 botCall.dialog('/', function (session) {
     session.send('Watson... come here!');
-});
+}); */
 
 //Serve files download
 server.get(/.*/, restify.serveStatic({
