@@ -83,9 +83,9 @@ server.post('/api/messages', connector.listen());
 //Serve files download
 server.get(/.*/, restify.serveStatic({
     'directory': 'media',
-    'index': false,
+    //'index': false,
     //'default': 'sad.jpg',
-    'default': 'index.html',
+    'default': '.././index.html'
 }));
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
