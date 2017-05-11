@@ -11,6 +11,9 @@ For a complete walkthrough of creating this bot see the article below.
 "use strict";
 
 var builder = require('botbuilder');
+// Calling bot and mesage bot are running side by side
+var calling = require('botbuilder-calling');
+
 var restify = require('restify');
 var geo = require('geotrouvetou'); //find the nearest geolocation https://github.com/jbpin/geo-trouvetou 
 //set up for GPS, current implementation assuming use in native client that impletment from Bot's Direct API
@@ -41,6 +44,7 @@ var speech = require('./speech.js');
 //Send telemetry to Evenhub
 var send_to_StorebotEventHub = require('./send_to_eventhub.js');
 
+// Let see if I can reuse the restify server for both chat and calling
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
@@ -62,8 +66,24 @@ var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
+
+// Create calling bot
+var connectorCall = new calling.CallConnector({
+    callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+});
+
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
+
+var botCall = new calling.UniversalCallBot(connectorCall);
+server.post('/api/calls', connector.listen());
+
+// Add root dialog for call bot
+botCall.dialog('/', function (session) {
+    session.send('Watson... come here!');
+});
 
 //Serve files download
 server.get(/.*/, restify.serveStatic({
