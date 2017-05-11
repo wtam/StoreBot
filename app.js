@@ -11,8 +11,8 @@ For a complete walkthrough of creating this bot see the article below.
 "use strict";
 
 var builder = require('botbuilder');
-// Calling bot and mesage bot are running side by side, cant find a way to mix the 2 bot yet as Azure keep having iisnode permission issues
-var calling = require('botbuilder-calling');
+// Calling bot and mesage bot are running side by side, waht if I replace the call bot wiht orign botbuilder?
+var builderCalling = require('botbuilder-calling');
 
 var restify = require('restify');
 var geo = require('geotrouvetou'); //find the nearest geolocation https://github.com/jbpin/geo-trouvetou 
@@ -46,6 +46,7 @@ var send_to_StorebotEventHub = require('./send_to_eventhub.js');
 
 // Create restify server for chat 
 var server = restify.createServer();
+/// BE CAREFUL AZURE WEB APP WILL HAVE HTTP://UNDEFINED OR HTTP://0.0.0.0/0.0.0.0 IF EITHER HOST OR PORT DEFINED ON WEBAPP SETTING!!!!!!
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
@@ -63,21 +64,19 @@ var player = edge.func(function () {/*
 
 
 // Create Chat bot
-var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-});
-
-/*
-// Create calling bot
-var connectorCall = new calling.CallConnector({
+// var connector = new builder.ChatConnector({
+// replace the above chat connector to call connector
+var connector = new builderCalling.CallConnector({
+    // add the call back for skypecall
     callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
+
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
-*/
 
-var bot = new builder.UniversalBot(connector);
+// var bot = new builder.UniversalBot(connector);
+// replace the above bot to calling bot
+var bot = new builderCalling.UniversalCallBot(connector);
 server.post('/api/messages', connector.listen());
 
 /*
