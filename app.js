@@ -99,6 +99,7 @@ server.get(/.*/, restify.serveStatic({
 var model = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/f567c7e9-c4ab-442d-8956-41cb1c8bcffc?subscription-key=f5a1c2fc5ea0407ba30aed8e2e27187c&timezoneOffset=8.0&verbose=true&spellCheck=true&q='
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] });
+//var intentsCalling = new builderCalling.DialogAction.....?????{ recognizers: [recognizer] });
 
 // Add root dialog
 bot.dialog('/', intents);
@@ -148,7 +149,7 @@ bot.use({
         if (!session.userData.firstRun) {
             session.userData.sessionID = uuid.v4()
             if (session.message.source == 'skype')
-                session.send('Hello... Who is calling me!');
+                session.send('Ah ha!... Who is calling me?');
         }
         //set timeout if user not responding within the period, end the session if exist     
         session.userData.lastAccess = Date.now()
@@ -178,9 +179,11 @@ bot.use({
                     client.del(session.userData.sessionID, function (err, reply) {
                         console.log(reply, "Clearing the redis entry.....")
                     })
-                    session.clearDialogStack()
+                    session.endDialog()
+                    //session.clearDialogStack()
                     session.reset()
                     session.userData.firstRun = false
+                    intents.cancelAction()  //not yet figure out the onDefault intent being called whem its end
                 } else {
                     console.log("idleTime less than max of 1 min, keep the session")
                 } 
