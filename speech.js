@@ -4,6 +4,7 @@
 
     var clientId = 'speechtest-app';                             // Can be anything
     var clientSecret = '3c3cb8d386544dabb9cc5cf7f93eb799'; // API key from Azure marketplace
+    var clientSecret = '1d52b999664841558ddfafae59b679ba'
     var accessToken = null;
 
     var str = 'This is a demo to call Microsoft text to speach service in Node.js.';
@@ -38,7 +39,13 @@
                 'client_id': encodeURIComponent(clientId),
                 'client_secret': encodeURIComponent(clientSecret),
                 'scope': 'https://speech.platform.bing.com'
-            }
+            } /*
+            url: 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
+            form: {
+                'Content-Type' : 'application/json',
+                'accept' : 'application/jwt',
+                'Ocp-Apim-Subscription-Key' :'1d52b999664841558ddfafae59b679ba'
+            } */
         }, function (err, resp, body) {
             if (err) return callback(err);
             try {

@@ -15,7 +15,8 @@ var hubname = 'storeboteventhub'; // Replace with your Event Hub name
 // Shared Access Key parameters
 // Replace with the Policy Name and Primary (or Secondary) Key from your Event Hub configuration
 var my_key_name = 'send';
-var my_key = 'T5sASDwt0RdN2sCMTmB1uyWVxqcEA4aZUxn4+bOwIKg=';
+//var my_key = 'T5sASDwt0RdN2sCMTmB1uyWVxqcEA4aZUxn4+bOwIKg=';
+var my_key = 'aND782fnI6UugOobFYmAz+OJU4eTDHAjgI6hKf+qeEk='
 //Endpoint=sb://storeboteventhub-ns.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=T5sASDwt0RdN2sCMTmB1uyWVxqcEA4aZUxn4+bOwIKg=
 
 // Sample payload to send
