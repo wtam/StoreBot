@@ -134,14 +134,10 @@ botCalling.dialog('/',
     }
 );
 
-var recognizer2 = new builder.LuisRecognizer(model);
-var intents2 = new builder.IntentDialog({ recognizers: [recognizer2] });
-botWechat.dialog('/', intents2);  //let see if its able to leverage the luis as they bot  come from the same builder
-/*
 botWechat.dialog('/', function (session) {
     console.log('Wechat message: ', session.message);
     session.send("Hello from WeChat channel :)");
-});*/
+});
 
 //setup the store that has Chinese medicine for closest geolocation detection
 //map Waston store addrees to its geolocation using http://www.latlong.net/
@@ -180,8 +176,6 @@ bot.use({
             session.userData.sessionID = uuid.v4()
             if (session.message.source == 'skype')
                 session.send('Ah ha!... Who is calling me?');
-            if (session.message.source == 'wechat')
-                session.send('Ah ha!... you are from wechat!');
         }
         //set timeout if user not responding within the period, end the session if exist     
         session.userData.lastAccess = Date.now()
