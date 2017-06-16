@@ -69,6 +69,7 @@ var connector = new builder.ChatConnector({
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
+//Skype call connector
 var connectorCalling = new builderCalling.CallConnector({
 // add the call back for skypecall
     callbackUrl: 'https://storebotwebapp.azurewebsites.net/api/calls',
@@ -76,11 +77,29 @@ var connectorCalling = new builderCalling.CallConnector({
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
+//add wechat connector 
+//Ref : https://github.com/jyfcrw/botbuilder-wechat-connector 
+//call back associate to the token: 
+//  Call back URL: https://storebotwebapp.azurewebsites.net/api/wechat
+//  step 1 Get the appid etc : https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index 
+//  step 2: Get the token: https://mp.weixin.qq.com/debug/cgi-bin/apiinfo?t=index&type=%E5%9F%BA%E7%A1%80%E6%94%AF%E6%8C%81&form=%E8%8E%B7%E5%8F%96access_token%E6%8E%A5%E5%8F%A3%20/token 
+//  Note:!!! Each to ken expire in 7200sec
+var connector_wechat = require('botbuilder-wechat-connector');
+var wechatConnector = new connector_wechat.WechatConnector({
+    appID: "wxbe0047d3a5e07e1d ",
+    appSecret: "e83c6ff8a1a7cce16707a0b64634b39a ",
+    //appToken: "oYMVZx-jwE9cNLA3ZoyXLKSBgpaC79TtHWc9P_haPd0T9aMDKZeclX6AMV4TAlhrrXF4gRRYWaVlbG-kaMZ-fk_H4NKCgJ0BVDXSQnINFQMTAcADAVCJ"
+    appToken: process.env.WECHAT_TOKEN
+});
+
+
 var bot = new builder.UniversalBot(connector);
 var botCalling = new builderCalling.UniversalCallBot(connectorCalling);
+var botWechat = new builder.UniversalBot(wechatConnector);
 
 server.post('/api/messages', connector.listen());
 server.post('/api/calls', connectorCalling.listen());
+server.post('/api/wechat', wechatConnector.listen());
 
 //Serve files download
 server.get(/.*/, restify.serveStatic({
@@ -113,6 +132,10 @@ botCalling.dialog('/',
         session.beginDialog('/firstRun');*/
     }
 );
+botWechat.dialog('/', function (session) {
+	console.log('Wechat message: ', session.message);
+    session.send("Hello from WeChat channel :)");
+});
 
 //setup the store that has Chinese medicine for closest geolocation detection
 //map Waston store addrees to its geolocation using http://www.latlong.net/
