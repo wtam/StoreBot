@@ -134,7 +134,9 @@ botCalling.dialog('/',
     }
 );
 
-botWechat.dialog('/', intents);  //let see if its able to leverage the luis as they bot  come from the same builder
+var recognizer2 = new builder.LuisRecognizer(model);
+var intents2 = new builder.IntentDialog({ recognizers: [recognizer2] });
+botWechat.dialog('/', intents2);  //let see if its able to leverage the luis as they bot  come from the same builder
 /*
 botWechat.dialog('/', function (session) {
     console.log('Wechat message: ', session.message);
