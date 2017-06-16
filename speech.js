@@ -3,7 +3,7 @@
     var request = require('request');
 
     var clientId = 'speechtest-app';                             // Can be anything
-    var clientSecret = '3c3cb8d386544dabb9cc5cf7f93eb799'; // API key from Azure marketplace
+    ///var clientSecret = '3c3cb8d386544dabb9cc5cf7f93eb799'; // API key from Azure marketplace
     var clientSecret = '1d52b999664841558ddfafae59b679ba'
     var accessToken = null;
 
@@ -13,7 +13,7 @@
     //console.log('Input text: "' + str + '"');
 
     getAccessToken(clientId, clientSecret, function (err, accessToken) {
-        if (err) return console.log(err);
+        if (err) return console.log("Fail to get Token:" , err);
         console.log('Got access token: ' + accessToken)
         /*
        // textToSpeech(str, 'test.wav', accessToken, function (err) {
@@ -33,24 +33,25 @@
 
   function getAccessToken(clientId, clientSecret, callback) {
         request.post({
-            url: 'https://oxford-speech.cloudapp.net/token/issueToken',
+            /*url: 'https://oxford-speech.cloudapp.net/token/issueToken',
             form: {
                 'grant_type': 'client_credentials',
                 'client_id': encodeURIComponent(clientId),
                 'client_secret': encodeURIComponent(clientSecret),
                 'scope': 'https://speech.platform.bing.com'
-            } /*
-            url: 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
-            form: {
+            } */
+            uri: 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
+            headers: {
                 'Content-Type' : 'application/json',
                 'accept' : 'application/jwt',
                 'Ocp-Apim-Subscription-Key' :'1d52b999664841558ddfafae59b679ba'
-            } */
+            }  
         }, function (err, resp, body) {
             if (err) return callback(err);
             try {
                 //var accessToken = JSON.parse(body).access_token;
-                accessToken = JSON.parse(body).access_token;
+                ///accessToken = JSON.parse(body).access_token;
+                accessToken = body
                 if (accessToken) {
                     callback(null, accessToken);
                 } else {
