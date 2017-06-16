@@ -178,7 +178,7 @@ bot.use({
             session.userData.sessionID = uuid.v4()
             if (session.message.source == 'skype')
                 session.send('Ah ha!... Who is calling me?');
-            if (session.message.source == 'skype')
+            if (session.message.source == 'wechat')
                 session.send('Ah ha!... you are from wechat!');
         }
         //set timeout if user not responding within the period, end the session if exist     
